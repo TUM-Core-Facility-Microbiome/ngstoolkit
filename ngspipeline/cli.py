@@ -2,10 +2,10 @@
 
 """Command line interface"""
 
+from . import __version__, _module_name
 import argparse
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-v', '--version', action='version',
-                        version='%(prog)s 1.0', help="Show program's version number and exit.")
-    args = parser.parse_args()
+parser = argparse.ArgumentParser()
+parser.add_argument('-v', '--version', action='version',
+                    version=f'{_module_name} {__version__}', help="Show program's version number and exit.")
+args = parser.parse_args()
