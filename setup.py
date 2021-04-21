@@ -1,20 +1,20 @@
 import setuptools
 import versioneer
 
-with open("README.rst", "r") as fh:
+with open("README.md", "r") as fh:
     long_description = fh.read()
 with open("requirements.txt", "r") as fh:
     requirements = [line.strip() for line in fh]
 
 setuptools.setup(
-    name="is-number",
+    name="ngspipeline",
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
-    author="Jacob Tomlinson",
-    author_email="jacob@tomlinson.email",
-    description="A Python library to determine if something is a number.",
+    author="Zeno Sewald",
+    author_email="zeno.sewald@tum.de",
+    description="A Python library for NGS pipelines.",
     long_description=long_description,
-    long_description_content_type="text/x-rst",
+    long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
