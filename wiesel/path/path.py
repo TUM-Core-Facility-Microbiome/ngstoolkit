@@ -40,8 +40,3 @@ class WslMountedPath(object):
                 adjusted_path = adjusted_path.replace(mapping, self._drive_mapping[mapping] + "/")
                 break
         return adjusted_path.replace('\\', '/')
-
-
-manager = wsl_distributions.WSLManager()
-proc = manager.default_distro.run(['cat', WslMountedPath('path.py', manager.default_distro).translate()])
-print(proc.returncode)
