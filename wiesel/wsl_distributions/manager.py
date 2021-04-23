@@ -9,6 +9,7 @@ from typing import List, Optional, Union
 from typing.io import IO
 
 from wiesel import utils, errors, WSL_EXE
+from wiesel.utils import stream
 
 
 class Distro(object):
@@ -226,7 +227,8 @@ class Dockerfile(DistributionDefinition):
         print(' '.join(cmd))
 
         p = utils.Process(cmd, encoding='utf-8')
-        p.start().wait()
+        p.start()
+        stream(p, prefix="DOCKER BUILD")
         p.check_success()
 
         # create container from image
@@ -236,7 +238,8 @@ class Dockerfile(DistributionDefinition):
         print(' '.join(cmd))
 
         p = utils.Process(cmd, encoding='utf-8')
-        p.start().wait()
+        p.start()
+        stream(p, prefix="DOCKER CREATE")
         p.check_success()
 
         # export container to tar tar_file
@@ -246,16 +249,18 @@ class Dockerfile(DistributionDefinition):
         print(' '.join(cmd))
 
         p = utils.Process(cmd, encoding='utf-8')
-        p.start().wait()
+        p.start()
+        stream(p, prefix="DOCKER EXPORT")
         p.check_success()
 
         # cleanup
         cmd = [DOCKER_EXE, "rmi",
-               docker_image_name]
+               docker_image_name, "-f"]
         print(' '.join(cmd))
 
         p = utils.Process(cmd, encoding='utf-8')
-        p.start().wait()
+        p.start()
+        stream(p, prefix="DOCKER RMI")
         p.check_success()
 
         return os.path.abspath(tar_file_path)
