@@ -2,11 +2,14 @@ import abc
 import os
 import re
 import shutil
+import tempfile
 from itertools import islice
-from typing import List, Optional
+from time import sleep
+from typing import List, Optional, Union
+
+from typing.io import IO
 
 from wiesel import utils, errors
-from wiesel.wsl_distributions.build import DistributionTarFile
 
 WSL_EXE = shutil.which('wsl')
 
@@ -136,19 +139,121 @@ class WSLManager(object):
         return self._default_distro
 
 
-manager = WSLManager()
-print(manager.machines)
+class DistributionDefinition(object):
+    __metaclass__ = abc.ABCMeta
 
-try:
-    DistributionTarFile("Debian", "../../../debian.tar", "../../debian").build()
-except errors.WslImportFailedDuplicate:
-    pass
+    def __init__(self, distribution_name: str, install_location: str, version: int = None):
+        self.distribution_name: str = distribution_name
+        self.install_location: str = os.path.abspath(install_location)
+        self.version: Optional[int] = version
 
-print("Debian" in manager.machines)
+    @abc.abstractmethod
+    def build(self) -> Optional[RegisteredDistribution]:
+        pass
 
-d: RegisteredDistribution = manager.default_distro
-process = d.run(['ls', '/mnt/c/Users/Zeno'])
 
-print(process.complete_output)
+class DistributionTarFile(DistributionDefinition):
+    def __init__(self, distribution_name: str, tar_file: str, install_location: str, version: int = None):
+        super().__init__(distribution_name, install_location, version)
+        self.tar_file = os.path.abspath(tar_file)
 
-print(manager.machines)
+    def build(self) -> Optional[RegisteredDistribution]:
+        cmd = [WSL_EXE, "--import", self.distribution_name, self.install_location, self.tar_file]
+        if self.version:
+            cmd.append('--version')
+            cmd.append(str(self.version))
+
+        print(' '.join(cmd))
+
+        p = utils.Process(cmd)
+        p.start().wait()
+        print(p.complete_output)
+        print(p.returncode)
+
+        if p.returncode == 4294967295:
+            if str(p.stdout) == "A distribution with the supplied name already exists.\n\n":
+                raise errors.WslImportFailedDuplicate(p.stdout)
+            elif str(p.stdout) == "The supplied install location is already in use.\n\n":
+                raise errors.WslImportFailedInstallLocationInUse(p.stdout)
+
+            raise errors.WslImportFailed(p.stdout)
+
+        if not p.is_successful():
+            raise errors.WslImportFailed(p.stdout)
+
+        wsl_manager = WSLManager()
+        return wsl_manager.get_distro(self.distribution_name)
+
+
+class Dockerfile(DistributionDefinition):
+    """WSL distributions (as tar files) can be build using docker export.
+    This allows for automatic builds of WSL distributions starting from a docker file.
+    """
+
+    def __init__(self, dockerfile_path: str, docker_context_path: Optional[str],
+                 distribution_name: str, install_location: str, version: int = None):
+        super().__init__(distribution_name, install_location, version)
+        self.dockerfile_path: str = os.path.abspath(dockerfile_path)
+        if docker_context_path is not None:
+            self.docker_context_path: str = os.path.abspath(docker_context_path)
+        else:
+            self.docker_context_path = os.path.curdir
+        self._FILE_SUFFIX = ".wiesel_build.tar"
+        self._temp_file = tempfile.NamedTemporaryFile(suffix=self._FILE_SUFFIX)
+
+    def build_tar_file(self, file: Optional[Union[IO, IO[bytes]]] = None) -> str:
+        DOCKER_EXE = shutil.which('docker')
+
+        if file is None:
+            file = self._temp_file
+
+        docker_container_name = os.path.basename(file.name).replace(self._FILE_SUFFIX, "")
+        docker_image_name = f"wiesel_temp:{docker_container_name}"
+
+        # build docker image
+        cmd = [DOCKER_EXE, "build",
+               "-t", docker_image_name,
+               "-f", str(self.dockerfile_path),
+               str(self.docker_context_path)]
+        print(' '.join(cmd))
+
+        p = utils.Process(cmd, encoding='utf-8')
+        p.start().wait()
+        p.check_success()
+
+        # create container from image
+        cmd = [DOCKER_EXE, "create",
+               "--name", docker_container_name,
+               docker_image_name]
+        print(' '.join(cmd))
+
+        p = utils.Process(cmd, encoding='utf-8')
+        p.start().wait()
+        p.check_success()
+
+        # export container to tar file
+        cmd = [DOCKER_EXE, "export",
+               "--output", file.name,
+               docker_container_name]
+        print(' '.join(cmd))
+
+        p = utils.Process(cmd, encoding='utf-8')
+        p.start().wait()
+        p.check_success()
+
+        # cleanup
+        cmd = [DOCKER_EXE, "rmi",
+               docker_image_name]
+        print(' '.join(cmd))
+
+        p = utils.Process(cmd, encoding='utf-8')
+        p.start().wait()
+        p.check_success()
+
+        return file.name
+
+    def build(self) -> Optional[RegisteredDistribution]:
+        tar_file = self.build_tar_file()
+        distribution_from_tar = DistributionTarFile(
+            self.distribution_name, tar_file, self.install_location, self.version)
+        return distribution_from_tar.build()
