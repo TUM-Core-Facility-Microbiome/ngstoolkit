@@ -136,7 +136,7 @@ class Process(object):
 
     def check_success(self):
         if not self.is_successful():
-            raise Exception(f"Process {''.join(self.cmd)} failed with exit code {self.returncode}")
+            raise Exception(f"Process {' '.join(self.cmd)} failed with exit code {self.returncode}")
 
     def _start_enlist_thread(self, source: Optional[IO[_T]], channel: Channel,
                              target_queue: "Queue[CmdOutputLine]") -> None:
