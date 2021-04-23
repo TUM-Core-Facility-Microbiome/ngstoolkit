@@ -8,7 +8,7 @@ from wiesel.wsl_distributions.manager import Dockerfile
 class TestDockerfile(TestCase):
     def test_build_tar_file(self):
         distro_from_dockerfile = Dockerfile(
-            dockerfile_path="./wsl/docker/Dockerfile",
+            dockerfile_path="wsl/docker/dockerfile_test_archlinux",
             docker_context_path="./wsl/docker",
             distribution_name="built_with_docker",
             install_location="."
@@ -21,7 +21,7 @@ class TestDockerfile(TestCase):
 
     def test_build_tar_file_without_given_context(self):
         distro_from_dockerfile = Dockerfile(
-            dockerfile_path="./wsl/docker/Dockerfile",
+            dockerfile_path="wsl/docker/dockerfile_test_archlinux",
             docker_context_path=None,
             distribution_name="built_with_docker",
             install_location="."
@@ -34,7 +34,7 @@ class TestDockerfile(TestCase):
 
     def test_build_tar_file_default_name(self):
         distro_from_dockerfile = Dockerfile(
-            dockerfile_path="./wsl/docker/Dockerfile",
+            dockerfile_path="wsl/docker/dockerfile_test_archlinux",
             docker_context_path="./wsl/docker",
             distribution_name="built_with_docker",
             install_location="."
