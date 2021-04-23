@@ -1,15 +1,16 @@
 import abc
 import os
+from typing import Optional
 
 from wiesel import utils, errors
-from wiesel.wsl_distributions import RegisteredDistribution, WSL_EXE
+from wiesel.wsl_distributions import RegisteredDistribution, WSL_EXE, WSLManager
 
 
 class DistributionDefinition(object):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def build(self) -> RegisteredDistribution:
+    def build(self) -> Optional[RegisteredDistribution]:
         pass
 
 
@@ -20,7 +21,7 @@ class DistributionTarFile(DistributionDefinition):
         self.install_location = os.path.abspath(install_location)
         self.version = version
 
-    def build(self) -> RegisteredDistribution:
+    def build(self) -> Optional[RegisteredDistribution]:
         cmd = [WSL_EXE, "--import", self.distribution_name, self.install_location, self.tar_file]
         if self.version:
             cmd.append('--version')
@@ -43,3 +44,6 @@ class DistributionTarFile(DistributionDefinition):
 
         if not p.is_successful():
             raise errors.WslImportFailed(p.stdout)
+
+        wsl_manager = WSLManager()
+        return wsl_manager.get_distro(self.distribution_name)
