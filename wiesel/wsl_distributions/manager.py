@@ -1,13 +1,11 @@
-from typing import List
-
-from wiesel import utils, errors
-
 import abc
-from itertools import islice
 import os
 import re
 import shutil
+from itertools import islice
+from typing import List, Optional
 
+from wiesel import utils, errors
 from wiesel.wsl_distributions.build import DistributionTarFile
 
 WSL_EXE = shutil.which('wsl')
@@ -118,6 +116,14 @@ class WSLManager(object):
 
             if output.inner.startswith('*'):
                 self._default_distro = distro
+
+    def get_distro(self, distro_name: str) -> Optional[RegisteredDistribution]:
+        distro = None
+        machines = self.machines
+        for machine_name in machines.keys():
+            if machine_name == distro_name:
+                distro = machines.get(machine_name)
+        return distro
 
     @property
     def machines(self):
