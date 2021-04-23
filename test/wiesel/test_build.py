@@ -21,7 +21,7 @@ class TestDockerfile(TestCase):
             dockerfile_path="test/wiesel/data/docker/dockerfile_test_archlinux",
             docker_context_path="test/wiesel/data/docker",
             distribution_name="built_with_docker",
-            install_location="."
+            install_location=os.path.dirname(self.get_random_temp_path())
         )
 
         temp = self.get_random_temp_path()
@@ -36,7 +36,7 @@ class TestDockerfile(TestCase):
             dockerfile_path="test/wiesel/data/docker/dockerfile_test_archlinux",
             docker_context_path=None,
             distribution_name="built_with_docker",
-            install_location="."
+            install_location=os.path.dirname(self.get_random_temp_path())
         )
 
         temp = self.get_random_temp_path()
@@ -51,7 +51,7 @@ class TestDockerfile(TestCase):
             dockerfile_path="test/wiesel/data/docker/dockerfile_test_archlinux",
             docker_context_path="test/wiesel/data/docker",
             distribution_name="built_with_docker",
-            install_location="."
+            install_location=os.path.dirname(self.get_random_temp_path())
         )
 
         tar_file = distro_from_dockerfile.build_tar_file()
@@ -66,7 +66,7 @@ class TestDockerfile(TestCase):
                 dockerfile_path="test/wiesel/data/docker/dockerfile_test_archlinux",
                 docker_context_path="test/wiesel/data/docker",
                 distribution_name=random_distro_name,
-                install_location="."
+                install_location=os.path.dirname(self.get_random_temp_path())
             )
 
             distro = distro_from_dockerfile.build()
@@ -82,7 +82,7 @@ class TestDockerfile(TestCase):
                 dockerfile_path="test/wiesel/data/docker/dockerfile_test_archlinux",
                 docker_context_path="test/wiesel/data/docker",
                 distribution_name=random_distro_name,
-                install_location="."
+                install_location=os.path.dirname(self.get_random_temp_path())
             )
 
             temp = self.get_random_temp_path()
@@ -91,7 +91,7 @@ class TestDockerfile(TestCase):
             distro_from_tar = DistributionTarFile(
                 tar_file=tar_file,
                 distribution_name=random_distro_name,
-                install_location=os.path.basename(temp)
+                install_location=os.path.dirname(temp)
             )
             d = distro_from_tar.build()
             d.unregister()

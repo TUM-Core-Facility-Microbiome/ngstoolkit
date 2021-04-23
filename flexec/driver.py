@@ -43,8 +43,9 @@ class ClassicDriver(Driver):
     def run_cmd(self, cmd: List[str], shell: bool = False) -> Iterator[bytes]:
         self.process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=shell)
 
-        for line in iter(self.process.stdout.readline, b''):
-            yield line
+        with self.process as p:
+            for line in iter(p.stdout.readline, b''):
+                yield line
 
         self.process.wait()
 
