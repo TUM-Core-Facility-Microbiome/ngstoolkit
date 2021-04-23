@@ -187,6 +187,11 @@ class Dockerfile(DistributionDefinition):
     This allows for automatic builds of WSL distributions starting from a Dockerfile.
     """
 
+    def get_temp_file_path(self):
+        temp_file = tempfile.NamedTemporaryFile(suffix=self._FILE_SUFFIX)
+        temp_file.close()
+        return temp_file.name
+
     def __init__(self, dockerfile_path: str, docker_context_path: Optional[str],
                  distribution_name: str, install_location: str, version: int = None):
         super().__init__(distribution_name, install_location, version)
@@ -196,21 +201,21 @@ class Dockerfile(DistributionDefinition):
         else:
             self.docker_context_path = os.path.curdir
         self._FILE_SUFFIX = ".wiesel_build.tar"
-        self._temp_file = tempfile.NamedTemporaryFile(suffix=self._FILE_SUFFIX)
+        self._temp_file_path = self.get_temp_file_path()
 
-    def build_tar_file(self, tar_file: Optional[Union[IO, IO[bytes]]] = None) -> str:
+    def build_tar_file(self, tar_file_path: Optional[str] = None) -> str:
         """
         Create a TAR file that can be imported by WSL.
-        :param tar_file: TAR file to write. If None is given, a temporary file is created.
+        :param tar_file_path: TAR file path to write. If None is given, a temporary file is created.
         :return: Absolute path of the created TAR file.
         """
 
         DOCKER_EXE = shutil.which('docker')
 
-        if tar_file is None:
-            tar_file = self._temp_file
+        if tar_file_path is None:
+            tar_file_path = self._temp_file_path
 
-        docker_container_name = os.path.basename(tar_file.name).replace(self._FILE_SUFFIX, "")
+        docker_container_name = os.path.basename(tar_file_path).replace(self._FILE_SUFFIX, "")
         docker_image_name = f"wiesel_temp:{docker_container_name}"
 
         # build docker image
@@ -236,7 +241,7 @@ class Dockerfile(DistributionDefinition):
 
         # export container to tar tar_file
         cmd = [DOCKER_EXE, "export",
-               "--output", tar_file.name,
+               "--output", tar_file_path,
                docker_container_name]
         print(' '.join(cmd))
 
@@ -253,7 +258,7 @@ class Dockerfile(DistributionDefinition):
         p.start().wait()
         p.check_success()
 
-        return os.path.abspath(tar_file.name)
+        return os.path.abspath(tar_file_path)
 
     def build(self) -> Optional[RegisteredDistribution]:
         tar_file = self.build_tar_file()
