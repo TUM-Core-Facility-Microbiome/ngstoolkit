@@ -4,14 +4,11 @@ import re
 import shutil
 import tempfile
 from itertools import islice
-from time import sleep
 from typing import List, Optional, Union
 
 from typing.io import IO
 
-from wiesel import utils, errors
-
-WSL_EXE = shutil.which('wsl')
+from wiesel import utils, errors, WSL_EXE
 
 
 class Distro(object):
