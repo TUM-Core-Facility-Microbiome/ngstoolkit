@@ -1,0 +1,4 @@
+FROM archlinux
+
+RUN echo "This distribution was created in an automatic build process with WieSeL." > hello-world.txt
+CMD ["cat", "hello-world.txt"]

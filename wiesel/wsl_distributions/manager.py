@@ -187,7 +187,7 @@ class DistributionTarFile(DistributionDefinition):
 
 class Dockerfile(DistributionDefinition):
     """WSL distributions (as tar files) can be build using docker export.
-    This allows for automatic builds of WSL distributions starting from a docker file.
+    This allows for automatic builds of WSL distributions starting from a Dockerfile.
     """
 
     def __init__(self, dockerfile_path: str, docker_context_path: Optional[str],
@@ -201,13 +201,19 @@ class Dockerfile(DistributionDefinition):
         self._FILE_SUFFIX = ".wiesel_build.tar"
         self._temp_file = tempfile.NamedTemporaryFile(suffix=self._FILE_SUFFIX)
 
-    def build_tar_file(self, file: Optional[Union[IO, IO[bytes]]] = None) -> str:
+    def build_tar_file(self, tar_file: Optional[Union[IO, IO[bytes]]] = None) -> str:
+        """
+        Create a TAR file that can be imported by WSL.
+        :param tar_file: TAR file to write. If None is given, a temporary file is created.
+        :return: Absolute path of the created TAR file.
+        """
+
         DOCKER_EXE = shutil.which('docker')
 
-        if file is None:
-            file = self._temp_file
+        if tar_file is None:
+            tar_file = self._temp_file
 
-        docker_container_name = os.path.basename(file.name).replace(self._FILE_SUFFIX, "")
+        docker_container_name = os.path.basename(tar_file.name).replace(self._FILE_SUFFIX, "")
         docker_image_name = f"wiesel_temp:{docker_container_name}"
 
         # build docker image
@@ -231,9 +237,9 @@ class Dockerfile(DistributionDefinition):
         p.start().wait()
         p.check_success()
 
-        # export container to tar file
+        # export container to tar tar_file
         cmd = [DOCKER_EXE, "export",
-               "--output", file.name,
+               "--output", tar_file.name,
                docker_container_name]
         print(' '.join(cmd))
 
@@ -250,7 +256,7 @@ class Dockerfile(DistributionDefinition):
         p.start().wait()
         p.check_success()
 
-        return file.name
+        return os.path.abspath(tar_file.name)
 
     def build(self) -> Optional[RegisteredDistribution]:
         tar_file = self.build_tar_file()
