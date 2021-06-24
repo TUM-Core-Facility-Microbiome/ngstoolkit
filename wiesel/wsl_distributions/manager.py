@@ -3,8 +3,9 @@ import os
 import re
 import shutil
 import tempfile
+import time
 from itertools import islice
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Dict
 
 from typing.io import IO
 
@@ -155,7 +156,7 @@ class DistributionTarFile(DistributionDefinition):
         super().__init__(distribution_name, install_location, version)
         self.tar_file = os.path.abspath(tar_file)
 
-    def build(self) -> Optional[RegisteredDistribution]:
+    def _build(self):
         cmd = [WSL_EXE, "--import", self.distribution_name, self.install_location, self.tar_file]
         if self.version:
             cmd.append('--version')
@@ -182,6 +183,21 @@ class DistributionTarFile(DistributionDefinition):
         wsl_manager = WSLManager()
         return wsl_manager.get_distro(self.distribution_name)
 
+    def build(self, force=False) -> Optional[RegisteredDistribution]:
+        try:
+            registered_distro = self._build()
+            return registered_distro
+        except errors.WslImportFailedDuplicate as e:
+            if not force:
+                raise e
+            else:
+                # unregister distribution
+                distro: RegisteredDistribution = WSLManager().get_distro(self.distribution_name)
+                distro.unregister()
+
+                # try again
+                return self._build()
+
 
 class Dockerfile(DistributionDefinition):
     """WSL distributions (as tar files) can be build using docker export.
@@ -194,7 +210,7 @@ class Dockerfile(DistributionDefinition):
         return temp_file.name
 
     def __init__(self, dockerfile_path: str, docker_context_path: Optional[str],
-                 distribution_name: str, install_location: str, version: int = None):
+                 distribution_name: str, install_location: str, version: int = None, build_args: Optional[Dict] = None):
         super().__init__(distribution_name, install_location, version)
         self.dockerfile_path: str = os.path.abspath(dockerfile_path)
         if docker_context_path is not None:
@@ -203,6 +219,7 @@ class Dockerfile(DistributionDefinition):
             self.docker_context_path = os.path.curdir
         self._FILE_SUFFIX = ".wiesel_build.tar"
         self._temp_file_path = self.get_temp_file_path()
+        self._build_args = build_args
 
     def build_tar_file(self, tar_file_path: Optional[str] = None) -> str:
         """
@@ -219,11 +236,17 @@ class Dockerfile(DistributionDefinition):
         docker_container_name = os.path.basename(tar_file_path).replace(self._FILE_SUFFIX, "")
         docker_image_name = f"wiesel_temp:{docker_container_name}"
 
-        # build docker image
+        # build-context docker image
         cmd = [DOCKER_EXE, "build",
                "-t", docker_image_name,
-               "-f", str(self.dockerfile_path),
-               str(self.docker_context_path)]
+               "-f", str(self.dockerfile_path)]
+
+        if self._build_args:
+            args_string = ' '.join(f'{key}={val}' for key, val in self._build_args.items())
+            cmd.append("--build-arg")
+            cmd.append(args_string)
+
+        cmd.append(str(self.docker_context_path))
         print(' '.join(cmd))
 
         p = utils.Process(cmd, encoding='utf-8')
@@ -239,7 +262,7 @@ class Dockerfile(DistributionDefinition):
 
         p = utils.Process(cmd, encoding='utf-8')
         p.start()
-        stream(p, prefix="DOCKER CREATE")
+        docker_create_output = stream(p, prefix="DOCKER CREATE")
         p.check_success()
 
         # export container to tar tar_file
@@ -251,6 +274,16 @@ class Dockerfile(DistributionDefinition):
         p = utils.Process(cmd, encoding='utf-8')
         p.start()
         stream(p, prefix="DOCKER EXPORT")
+        p.check_success()
+
+        # remove container
+        container_id = docker_create_output[0].strip()
+        cmd = [DOCKER_EXE, "rm", container_id]
+        print(' '.join(cmd))
+
+        p = utils.Process(cmd, encoding='utf-8')
+        p.start()
+        stream(p, prefix="DOCKER RM")
         p.check_success()
 
         # cleanup
@@ -265,8 +298,20 @@ class Dockerfile(DistributionDefinition):
 
         return os.path.abspath(tar_file_path)
 
-    def build(self) -> Optional[RegisteredDistribution]:
+    def build(self, force=False) -> Optional[RegisteredDistribution]:
         tar_file = self.build_tar_file()
         distribution_from_tar = DistributionTarFile(
             self.distribution_name, tar_file, self.install_location, self.version)
-        return distribution_from_tar.build()
+        try:
+            registered_distro = distribution_from_tar.build()
+            return registered_distro
+        except errors.WslImportFailedDuplicate as e:
+            if not force:
+                raise e
+            else:
+                # unregister distribution
+                distro: RegisteredDistribution = WSLManager().get_distro(self.distribution_name)
+                distro.unregister()
+
+                # try again
+                return distribution_from_tar.build()

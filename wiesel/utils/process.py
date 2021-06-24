@@ -233,13 +233,20 @@ class ProcessPool(object):
 def stream(process: Process, prefix: str, sample_rate: float = 0.5,
            bytefilter: Callable[[bytes], bool] = lambda x: True,
            channelfilter: Callable[[Channel], bool] = lambda x: True):
+    lines = []
     while process.is_running():
         for pipebyte in process.get_lines_non_blocking():
             if channelfilter(pipebyte.channel) and bytefilter(pipebyte.inner):
-                print(f"{prefix}: {pipebyte.format_pretty(process._encoding)}", end='')
+                content = pipebyte.format_pretty(process._encoding)
+                lines.append(content)
+                print(f"{prefix}: {content}", end='')
 
         time.sleep(sample_rate)
 
     for pipebyte in process.get_lines_non_blocking():
         if channelfilter(pipebyte.channel) and bytefilter(pipebyte.inner):
-            print(f"{prefix}: {pipebyte.format_pretty(process._encoding)}", end='')
+            content = pipebyte.format_pretty(process._encoding)
+            lines.append(content)
+            print(f"{prefix}: {content}", end='')
+
+    return lines
