@@ -1,0 +1,1 @@
+from ngssdk.filename_manipulations.filename_manipulations import remove_extension

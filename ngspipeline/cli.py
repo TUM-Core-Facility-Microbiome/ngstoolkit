@@ -27,7 +27,7 @@ logging.debug(f"arguments: {args}")
 
 
 # control the distribution
-DISTRO_NAME = "ngstoolkitdist-dev"
+DISTRO_NAME = "ngstoolkitdist"
 
 if args.build:
     logging.info(f"(Re-)Building the ngstoolkit WSL distribution")
