@@ -27,12 +27,92 @@ RUN  apt-get update \
 # WORKDIR STRUCTURE ##########################
 ##############################################
 WORKDIR /usr/local/bin
+RUN  mkdir ./src
+
+
+##############################################
+# GETTING SINA ###############################
+##############################################
+ARG sina_version="1.7.2"
+RUN  curl -L https://github.com/epruesse/SINA/releases/download/v${sina_version}/sina-${sina_version}-linux.tar.gz -o sina.tar.gz \
+  && if [ $(md5sum ./sina.tar.gz) != "aa1aeffaf71a05cb764b0fbe80e4818b ./sina.tar.gz" ]; then echo "sina hash mismatch"; exit 1; fi \
+  && tar -zxvf ./sina.tar.gz \
+  && ln -s sina-*-linux/sina sina \
+  && rm -rf ./sina.tar.gz
+
+
+##############################################
+# GETTING FASTTREE ###########################
+##############################################
+ARG fasttree_version="2.1.11"
+RUN  curl -L http://www.microbesonline.org/fasttree/FastTree -o FastTree_${fasttree_version} \
+  && if [ $(md5sum ./FastTree_${fasttree_version}) != "e218e38103fa841295b315f24e9a2b9f ./FastTree" ]; then echo "FastTree hash mismatch"; exit 1; fi \
+  && ln -s FastTree_${fasttree_version} FastTree
+
+
+##############################################
+# GETTING BOWTIE2 ############################
+##############################################
+ARG bowtie2_version="2.4.4"
+RUN  curl -L https://downloads.sourceforge.net/project/bowtie-bio/bowtie2/${bowtie2_version}/bowtie2-${bowtie2_version}-linux-x86_64.zip -o bowtie2.zip \
+  && if [ $(md5sum ./bowtie2.zip) != "6b73a78053ce4f30d53bf95c7358d03e ./bowtie2.zip" ]; then echo "bowtie2 hash mismatch"; exit 1; fi \
+  && unzip bowtie2.zip \
+  && ln -s bowtie2-*-linux-x86_64/bowtie2 bowtie2 \
+  && rm -rf bowtie2.zip
+
+
+##############################################
+# GETTING SORTMERNA ##########################
+##############################################
+ARG sortmerna_version="4.3.3"
+RUN  curl -L https://github.com/biocore/sortmerna/releases/download/v${sortmerna_version}/sortmerna-${sortmerna_version}-Linux.tar.gz -o sortmerna.tar.gz \
+  && if [ $(md5sum ./sortmerna.tar.gz) != "85b659dc000718e0b3c0de842dd1bb6c ./sortmerna_source_code.tar.gz" ]; then echo "sortmerna hash mismatch"; exit 1; fi \
+  && tar -zxvf ./sortmerna.tar.gz \
+  && ln -s sortmerna-${sortmerna_version}-*/bin/sortmerna sortmerna \
+  && rm -rf ./sortmerna.tar.gz
+
+
+##############################################
+# GETTING USEARCH ############################
+##############################################
+ARG usearch_version="11.0.667"
+RUN  curl -L https://www.drive5.com/downloads/usearch${usearch_version}_i86linux32.gz -o usearch.gz \
+  && if [ $(md5sum ./usearch.gz) != "27cc6b779b899daa5d17a95fd0eeb69c ./usearch.gz" ]; then echo "usearch32 hash mismatch"; exit 1; fi \
+  && gunzip usearch.gz
+
+# If you have a 64 bit version put the executable in the app folder; this will replace the 32 bit executable
+COPY app/usearch${usearch_version}_i86linux64* usearch
+
+
+##############################################
+# DATABASES ##################################
+##############################################
+RUN  mkdir databases
 
 
 ##############################################
 # FILE IMPORT ################################
 ##############################################
-COPY app .
+# helper scripts
+COPY app/report_versions.sh ./src/report_versions.sh
+COPY app/mount.py ./src/mount.py
+COPY app/umount.py ./src/umount.py
+COPY app/set_status.py ./src/set_status.py
+
+# readcounting scripts
+COPY app/readcount.py ./src/readcount.py
+COPY app/filter_readcount.py ./src/filter_readcount.py
+
+# offline analysis scripts
+COPY app/runDeMux.pl ./src/runDeMux.pl
+COPY app/offline-analysis.pl ./src/offline-analysis.pl
+COPY app/offline-analysis-runner.py ./src/offline-analysis-runner.py
+
+# spike scripts
+COPY app/rm_spikes.py ./src/rm_spikes.py
+COPY app/spikes_normalizer.py ./src/spikes_normalizer.py
+# spikes database
+COPY app/spikes.fasta databases/spikes.fasta
 
 
 ##############################################
@@ -40,6 +120,7 @@ COPY app .
 ##############################################
 ARG ngstoolkit_version
 RUN  echo "${ngstoolkit_version}" > wsl_distro_version.txt
+RUN  echo "This is a clean install of ${ngstoolkit_version}" > status.txt
 
 
 ##############################################
