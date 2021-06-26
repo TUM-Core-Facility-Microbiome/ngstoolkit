@@ -94,23 +94,23 @@ RUN  mkdir databases
 # FILE IMPORT ################################
 ##############################################
 # helper scripts
-COPY app/report_versions.sh ./src/report_versions.sh
-COPY app/mount.py ./src/mount.py
-COPY app/umount.py ./src/umount.py
-COPY app/set_status.py ./src/set_status.py
+COPY app/report_versions.sh .
+COPY app/mount.py .
+COPY app/umount.py .
+COPY app/set_status.py .
 
 # readcounting scripts
-COPY app/readcount.py ./src/readcount.py
-COPY app/filter_readcount.py ./src/filter_readcount.py
+COPY app/readcount.py .
+COPY app/filter_readcount.py .
 
 # offline analysis scripts
-COPY app/runDeMux.pl ./src/runDeMux.pl
-COPY app/offline-analysis.pl ./src/offline-analysis.pl
-COPY app/offline-analysis-runner.py ./src/offline-analysis-runner.py
+COPY app/runDeMux.pl .
+COPY app/offline-analysis.pl .
+COPY app/offline-analysis-runner.py .
 
 # spike scripts
-COPY app/rm_spikes.py ./src/rm_spikes.py
-COPY app/spikes_normalizer.py ./src/spikes_normalizer.py
+COPY app/rm_spikes.py .
+COPY app/spikes_normalizer.py .
 # spikes database
 COPY app/spikes.fasta databases/spikes.fasta
 
