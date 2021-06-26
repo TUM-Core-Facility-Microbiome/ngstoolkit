@@ -508,7 +508,7 @@ if ($doZ == 0) {
     #clusering of seq in OTUs (clustered)
     print ">>> Clustering ...";
     logToStatusFile("Cluster into OTUs...");
-    $command = $usearch . " -cluster_otus $pathout/$sorted_filename -otus $pathout/$otus_03_filename -relabel OTU_ -sizein -otu_radius_pct 3.0";
+    $command = $usearch . " -cluster_otus $pathout/$sorted_filename -otus $pathout/$otus_03_filename -relabel OTU_ -sizein";
     @output = `$command`;
     if ($?) {
         print "Clustering command failed\n";
