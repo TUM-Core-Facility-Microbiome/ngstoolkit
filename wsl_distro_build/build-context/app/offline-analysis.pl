@@ -43,12 +43,10 @@ my $zotu_minsize = 8; # this is unoise3 default
 ########### Links  ################
 
 my $bin_dir = "/usr/local/bin";
-my $bit = "64";
-my $usearch_bin = "$bin_dir/usearch8.1.1861_i86linux${bit}";
-my $usearch11_bin = "$bin_dir/usearch11.0.667_i86linux${bit}";
+my $usearch = "$bin_dir/usearch";
 
 # default databases
-my $db = "$bin_dir/silva-138-99-seqs_${bit}.udb"; #the reference db for chimera checks
+my $db = "$bin_dir/silva-138-99-seqs.udb"; #the reference db for chimera checks
 my $ref16RNAdb_1 = $bin_dir . "/sortmerna-4.2.0-Linux/rRNA_databases/silva-bac-16s-id90.fasta";
 my $ref16RNAdb_2 = $bin_dir . "/sortmerna-4.2.0-Linux/rRNA_databases/silva-arc-16s-id95.fasta";
 my $ref18db = $bin_dir . "/sortmerna-4.2.0-Linux/rRNA_databases/silva-euk-18s-id95.fasta";
@@ -205,7 +203,7 @@ if ($isPaired == 1) {
         }
         else {
             logToStatusFile("Processing Sample $sample ($file_no/$total_files): Merging paired reads");
-            system "$usearch11_bin -fastq_mergepairs $demultiplexed/$forward_file -reverse $demultiplexed/$reverse_file -fastq_maxdiffs $maxdiff -fastq_pctid $minpctid -fastqout $paired/$merged -fastq_trunctail $trim_score -fastq_minmergelen $minmergelen -fastq_maxmergelen $maxmergelen -report $pathout/report.txt";
+            system "$usearch -fastq_mergepairs $demultiplexed/$forward_file -reverse $demultiplexed/$reverse_file -fastq_maxdiffs $maxdiff -fastq_pctid $minpctid -fastqout $paired/$merged -fastq_trunctail $trim_score -fastq_minmergelen $minmergelen -fastq_maxmergelen $maxmergelen -report $pathout/report.txt";
 
             if ($?) {
 
@@ -247,7 +245,7 @@ if ($isPaired == 1) {
             # i export the trimmed sequences back to the same filename,  Iam not sure if this is correct
             # alternatively I should use $filtered2/$merged
             logToStatusFile("Processing Sample $sample ($file_no/$total_files): Trimming sides");
-            system "$usearch_bin -fastx_truncate $paired/$merged -stripleft $forward_trim -stripright $reverse_trim -fastqout $filtered1/$merged";
+            system "$usearch -fastx_truncate $paired/$merged -stripleft $forward_trim -stripright $reverse_trim -fastqout $filtered1/$merged";
             if ($?) {
                 print "Trmming command failed\n";
                 terminate(3);
@@ -259,7 +257,7 @@ if ($isPaired == 1) {
             #filtering using usearch for max expected errors (output:filtered1)
             print "\tFiltering merged reads ... ";
             logToStatusFile("Processing Sample $sample ($file_no/$total_files): Filtering merged reads");
-            system "$usearch_bin -fastq_filter $filtered1/$merged -fastq_maxee_rate $expected_error_rate -fastaout $filtered2/$fastafile";
+            system "$usearch -fastq_filter $filtered1/$merged -fastq_maxee_rate $expected_error_rate -fastaout $filtered2/$fastafile";
             if ($?) {
                 print "Filtering command failed\n";
                 terminate(3);
@@ -285,7 +283,7 @@ if ($isPaired == 1) {
 
             print "\tDereplicating  seqs ...";
             logToStatusFile("Processing Sample $sample ($file_no/$total_files): Dereplicating");
-            system "$usearch11_bin -fastx_uniques $filtered2/$fastafile -fastaout $unique/$fastafile -sizeout -minuniquesize 1"; #-minuniquesize X can be used to remove singletons 1-keep all#
+            system "$usearch -fastx_uniques $filtered2/$fastafile -fastaout $unique/$fastafile -sizeout -minuniquesize 1"; #-minuniquesize X can be used to remove singletons 1-keep all#
             if ($?) {
                 print "Dereplicating command failed\n";
                 terminate(3);
@@ -310,7 +308,7 @@ if ($isPaired == 1) {
             #denoising paired reads  (unique)
             print "\tDenoising  seqs ...";
             logToStatusFile("Processing Sample $sample ($file_no/$total_files): Denoising");
-            system " $usearch11_bin -unoise3 $unique/$fastafile -zotus $noiseless/$fastafile -minsize $zotu_minsize";
+            system " $usearch -unoise3 $unique/$fastafile -zotus $noiseless/$fastafile -minsize $zotu_minsize";
             #usearch -unoise3 uniques.fa -zotus zotus.fa
             #-minsize option specifies the minimum abundance (size= annotation). Default is 8.
             #-unoise_alpha option specifies the alpha parameter, default is 2.0.
@@ -359,7 +357,7 @@ else {
             print "\tTrimming forward side ...";
             logToStatusFile("Processing Sample $sample ($file_no/$total_files): Trimming forward");
             #my $reverse_trim =0;
-            system "$usearch_bin -fastx_truncate $demultiplexed/$forward_file -stripleft $forward_trim  -fastqout $filtered1/$forward_file";
+            system "$usearch -fastx_truncate $demultiplexed/$forward_file -stripleft $forward_trim  -fastqout $filtered1/$forward_file";
             if ($?) {
                 print "Trimming command failed\n";
                 terminate(3);
@@ -372,7 +370,7 @@ else {
             #Also trim them to their setted minLength
             print "\tFiltering merged reads ... ";
             logToStatusFile("Processing Sample $sample ($file_no/$total_files): Filter merged reads");
-            system "$usearch_bin -fastq_filter $filtered1/$forward_file  -fastq_truncqual $trim_score -fastq_maxee_rate $expected_error_rate -fastq_trunclen $minLength -fastaout $filtered2/$fastafile";
+            system "$usearch -fastq_filter $filtered1/$forward_file  -fastq_truncqual $trim_score -fastq_maxee_rate $expected_error_rate -fastq_trunclen $minLength -fastaout $filtered2/$fastafile";
             if ($?) {
                 print "Filtering command failed\n";
                 terminate(3);
@@ -397,7 +395,7 @@ else {
             #dereplicating reads  (unique)
             print "\tDereplicating seqs ...";
             logToStatusFile("Processing Sample $sample ($file_no/$total_files): Dereplicating");
-            system "$usearch11_bin -fastx_uniques $filtered2/$fastafile -fastaout $unique/$fastafile -sizeout -minuniquesize 1"; #-minuniquesize X can be used to remove singletons 1-keep all#
+            system "$usearch -fastx_uniques $filtered2/$fastafile -fastaout $unique/$fastafile -sizeout -minuniquesize 1"; #-minuniquesize X can be used to remove singletons 1-keep all#
             if ($?) {
                 print "Dereplicating command failed\n";
                 terminate(3);
@@ -420,7 +418,7 @@ else {
             #denoising paired reads  (unique)
             print "\tDenoising  seqs ...";
             logToStatusFile("Processing Sample $sample ($file_no/$total_files): Denoising");
-            system " $usearch11_bin -unoise3 $unique/$fastafile -zotus $noiseless/$fastafile -minsize $zotu_minsize";
+            system " $usearch -unoise3 $unique/$fastafile -zotus $noiseless/$fastafile -minsize $zotu_minsize";
             #usearch -unoise3 uniques.fa -zotus zotus.fa
             #-minsize option specifies the minimum abundance (size= annotation). Default is 8.
             #-unoise_alpha option specifies the alpha parameter, default is 2.0.
@@ -497,20 +495,20 @@ print "Done.\n\n";
 #dereplicating merged paired reads  (unique)
 print ">>> Dereplicating seqs ...";
 logToStatusFile("Dereplicating...");
-system $usearch11_bin . " -fastx_uniques $pathout/$merged_filename -fastaout $pathout/$dereped_filename -sizein -sizeout";
+system $usearch . " -fastx_uniques $pathout/$merged_filename -fastaout $pathout/$dereped_filename -sizein -sizeout";
 print "Done.\n\n";
 
 #sorting of dereplicated reads by abundance (sorted)
 print ">>> Sorting seqs ...";
 logToStatusFile("Sorting...");
-system $usearch_bin . " -sortbysize $pathout/$dereped_filename -fastaout $pathout/$sorted_filename";
+system $usearch . " -sortbysize $pathout/$dereped_filename -fastaout $pathout/$sorted_filename";
 print "Done.\n\n";
 
 if ($doZ == 0) {
     #clusering of seq in OTUs (clustered)
     print ">>> Clustering ...";
     logToStatusFile("Cluster into OTUs...");
-    $command = $usearch_bin . " -cluster_otus $pathout/$sorted_filename -otus $pathout/$otus_03_filename -relabel OTU_ -sizein -otu_radius_pct 3.0";
+    $command = $usearch . " -cluster_otus $pathout/$sorted_filename -otus $pathout/$otus_03_filename -relabel OTU_ -sizein -otu_radius_pct 3.0";
     @output = `$command`;
     if ($?) {
         print "Clustering command failed\n";
@@ -537,7 +535,7 @@ if ($doZ == 0) {
             unless (-e $udb) {  # if arb file does not exist
                 # build arb file from own reference file
                 logToStatusFile("Index reference file to udb file...");
-                $command = $usearch_bin . " -makeudb_usearch $reference_sequence -output $udb 2>&1";
+                $command = $usearch . " -makeudb_usearch $reference_sequence -output $udb 2>&1";
                 @output = `$command`;
                 if ($?) {
                     print "Indexing of fasta to udb failed\n";
@@ -550,7 +548,7 @@ if ($doZ == 0) {
             $udb = $db;
         }
 
-        $command = $usearch_bin . " -uchime_ref $pathout/$otus_03_filename -db $udb -nonchimeras $pathout/$nonchimeric_otus_03_filename -strand plus";
+        $command = $usearch . " -uchime2_ref $pathout/$otus_03_filename -db $udb -nonchimeras $pathout/$nonchimeric_otus_03_filename -strand plus";
         @output = `$command`;
         if ($?) {
             print "Chimeras removal command failed\n";
@@ -571,7 +569,7 @@ else {
     #Denoising sequences (denoised)
     print ">>> Denoising  seqs ...";
     logToStatusFile("Denoising...");
-    $command = "$usearch11_bin -unoise3 $pathout/$sorted_filename -zotus $pathout/$otus_03_filename -minsize $zotu_minsize";
+    $command = "$usearch -unoise3 $pathout/$sorted_filename -zotus $pathout/$otus_03_filename -minsize $zotu_minsize";
     @output = `$command`;
     if ($?) {
         print "Denoising command failed\n";
@@ -588,7 +586,7 @@ else {
     #remove chimeras using ref seqs (nonchimeric)
     # if ($perform_UCHIME == 1) {
     #     print ">>> Remove chimeric seqs ...";
-    #     $command = $usearch_bin . " -uchime_ref $pathout/$otus_03_filename -db $db -nonchimeras $pathout/nonchimeric_zotus.fasta -strand plus > /dev/null 2>&1";
+    #     $command = $usearch . " -uchime_ref $pathout/$otus_03_filename -db $db -nonchimeras $pathout/nonchimeric_zotus.fasta -strand plus > /dev/null 2>&1";
     #     @output = `$command`;
     #     if ($?) {
     #         print "Chimeras removal command failed\n";
@@ -643,7 +641,7 @@ if ($doZ == 0) {
     # Map reads (including singletons) back to OTUs
     print ">>> Build OTU table ... ";
     logToStatusFile("Build OTU table...");
-    #system $usearch_bin . " -usearch_global $pathout/$merged_filename -db $pathout/good-OTUs.fasta -strand plus -id 0.97 -uc $pathout/$map03 -matched $pathout/$matched03 > /dev/null 2>&1";# check id value
+    #system $usearch . " -usearch_global $pathout/$merged_filename -db $pathout/good-OTUs.fasta -strand plus -id 0.97 -uc $pathout/$map03 -matched $pathout/$matched03 > /dev/null 2>&1";# check id value
 
     # Create OTU table
     #system ("python2 " . $bin_dir . "/uc2otutab.py $pathout/$map03 > $pathout/$otu_table_03 2>/dev/null");   #check how sizes are merged in otus
@@ -659,13 +657,13 @@ if ($doZ == 0) {
     #        else {
     #            printf "child exited with value %d\n", $? >> 8;
     #        }
-    $command = "$usearch11_bin -otutab $pathout/$merged_filename -otus $pathout/$good_seqs -otutabout $pathout/$otu_table_03 -id 0.97";
+    $command = "$usearch -otutab $pathout/$merged_filename -otus $pathout/$good_seqs -otutabout $pathout/$otu_table_03 -id 0.97";
 }
 else {
     # build zotu table
     print ">>> Build ZOTU table ... ";
     logToStatusFile("Build zOTU table...");
-    $command = "$usearch11_bin -otutab $pathout/$merged_filename -zotus $pathout/$good_seqs -otutabout $pathout/$otu_table_03";
+    $command = "$usearch -otutab $pathout/$merged_filename -zotus $pathout/$good_seqs -otutabout $pathout/$otu_table_03";
 }
 @output = `$command`;
 if ($?) {
