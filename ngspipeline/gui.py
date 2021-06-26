@@ -243,7 +243,7 @@ class ChooseMode(Subframe):
         super().__init__(master, frame)
 
         self.mode = tk.StringVar()
-        self.mode.set('otu')
+        self.mode.set('zotu')
 
         tk.Label(frame,
                  text="Mode",
