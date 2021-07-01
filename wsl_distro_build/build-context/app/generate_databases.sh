@@ -48,7 +48,7 @@ for i in "${!target_domains[@]}"; do
   # clustering
   pct=${id:2:3}
   echo ">>> Clustering at ${pct}%"
-  sumaclust -l -p ${max_cpu} -t ${id} -F "${filename}"_sumaclust_"${pct}".fasta "${filename}".fasta
+  sumaclust -l -p ${max_cpu} -t "${id}" -F "${filename}"_sumaclust_"${pct}".fasta "${filename}".fasta
 
   # extracting cluster centroids
   echo ">>> Extracting cluster centroid sequences"
