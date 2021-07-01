@@ -51,7 +51,7 @@ RUN  cd databases \
 # maximum cpu to use in database generation
 ARG max_cpu=48
 RUN  cd databases \
-  && generate_databases.sh ${silva_ssu_nr99_filename}.fasta SSU ${max_cpu}
+  && generate_databases.sh ${silva_ssu_nr99_filename}.fasta ${silva_release} SSU ${max_cpu}
 
 
 # arb

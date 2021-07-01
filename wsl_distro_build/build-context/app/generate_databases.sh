@@ -3,12 +3,13 @@
 # Generate subdatabases for filtering with sortmeRna
 
 ref_db=$1  # SILVA ref database as FASTA file
-subunit=$2  # SSU or LSU
-max_cpu=$3  # max cpu to use in sumaclust
+silva_release=$2  # Name for SILVA release that will be incorporated into the filename
+subunit=$3  # SSU or LSU
+max_cpu=$4  # max cpu to use in sumaclust
 
 
 target_domains=( "Bacteria" "Eukaryota" "Archaea" )
-source="silva"
+source="silva_${silva_release}"
 if [ "${subunit}" = "SSU" ]; then
   filenames=( "${source}-bac-16s" "${source}-euk-18s" "${source}-arc-16s" )
   ident=( 0.90 0.95 0.95 )
