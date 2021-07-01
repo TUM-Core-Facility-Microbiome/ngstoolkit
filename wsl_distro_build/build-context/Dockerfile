@@ -59,6 +59,7 @@ RUN  cd databases \
 # filtered dbs
 # As docker requires at least one file to be copied, we also copy the dockerfile which must always exist
 COPY Dockerfile opt/silva_${silva_release}-arc-16s-id95.fasta* opt/silva_${silva_release}-euk-18s-id95.fasta* opt/silva_${silva_release}-bac-16s-id90.fasta* databases/
+RUN  rm databases/Dockerfile
 
 # maximum cpu to use in database generation
 ARG max_cpu=48
@@ -79,6 +80,7 @@ ARG usearch_version="11.0.667"
 # If you have a 64 bit version put the executable in the app folder; 32 bit executable will be not downloaded then
 # As docker requires at least one file to be copied, we also copy the dockerfile which must always exist
 COPY Dockerfile opt/usearch${usearch_version}_i86linux64* ./
+RUN  rm ./Dockerfile
 
 RUN  if [ -f usearch${usearch_version}_i86linux64 ]; then mv usearch${usearch_version}_i86linux64 usearch; exit 0; fi \
   && curl -L https://www.drive5.com/downloads/usearch${usearch_version}_i86linux32.gz -o usearch.gz \
