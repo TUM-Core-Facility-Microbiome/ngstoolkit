@@ -46,11 +46,11 @@ my $bin_dir = "/usr/local/bin";
 my $usearch = "$bin_dir/usearch";
 
 # default databases
-my $db = "$bin_dir/silva-138-99-seqs.udb"; #the reference db for chimera checks
-my $ref16RNAdb_1 = $bin_dir . "/sortmerna-4.2.0-Linux/rRNA_databases/silva-bac-16s-id90.fasta";
-my $ref16RNAdb_2 = $bin_dir . "/sortmerna-4.2.0-Linux/rRNA_databases/silva-arc-16s-id95.fasta";
-my $ref18db = $bin_dir . "/sortmerna-4.2.0-Linux/rRNA_databases/silva-euk-18s-id95.fasta";
-my $silva_db_arb = $bin_dir . "/SILVA_138_SSURef_NR99_05_01_20_opt.arb";
+my $db =  $bin_dir . "/databases/SILVA_138.1_SSURef_NR99_tax_silva.udb";  # the reference db for chimera checks
+my $ref16RNAdb_1 = $bin_dir . "/databases/silva-bac-16s-id90.fasta";
+my $ref16RNAdb_2 = $bin_dir . "/databases/silva-arc-16s-id95.fasta";
+my $ref18db = $bin_dir . "/databases/silva-euk-18s-id95.fasta";
+my $silva_db_arb = $bin_dir . "/databases/SILVA_138.1_SSURef_NR99_12_06_20_opt.arb";
 
 my $pathout = $ARGV[16]; #the path where the processed analysis files will be stored
 my $AnalysisReadMe = "$bin_dir/Analysis-readme.pdf";

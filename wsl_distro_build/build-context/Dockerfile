@@ -40,14 +40,24 @@ RUN  mkdir databases
 COPY app/generate_databases.sh generate_databases.sh
 RUN  chmod -R +x /usr/local/bin
 
+# databases for filtering
 ARG silva_release="release_138_1"
-ARG silva_ssu_nr99_file="SILVA_138.1_SSURef_NR99_tax_silva.fasta.gz"
+# file without file extension (.fasta.gz)
+ARG silva_ssu_nr99_filename="SILVA_138.1_SSURef_NR99_tax_silva"
 RUN  cd databases \
-  && curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/Exports/${silva_ssu_nr99_file} -O \
+  && curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/Exports/${silva_ssu_nr99_filename}.fasta.gz -O \
   && gunzip *
 
 RUN  cd databases \
-  && generate_databases.sh SILVA_*_SSURef_*.fasta SSU
+  && generate_databases.sh ${silva_ssu_nr99_filename}.fasta SSU
+
+
+# arb
+ARG silva_arb_file="SILVA_138.1_SSURef_NR99_12_06_20_opt.arb.gz"
+RUN  cd databases \
+  && curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/ARB_files/${silva_arb_file} -O \
+  && gunzip *
+
 
 # spikes database
 COPY app/spikes.fasta databases/spikes.fasta
@@ -105,6 +115,9 @@ RUN  curl -L https://www.drive5.com/downloads/usearch${usearch_version}_i86linux
 
 # If you have a 64 bit version put the executable in the app folder; this will replace the 32 bit executable
 COPY app/usearch${usearch_version}_i86linux64* usearch
+
+# udb database
+RUN  usearch -makeudb_usearch databases/${silva_ssu_nr99_filename}.fasta -output ${silva_ssu_nr99_filename}.udb
 
 
 ##############################################
