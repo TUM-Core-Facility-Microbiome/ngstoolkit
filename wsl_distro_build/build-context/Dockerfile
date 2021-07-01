@@ -43,14 +43,13 @@ RUN  chmod -R +x /usr/local/bin
 ARG silva_release="release_138_1"
 # file without file extension (.fasta.gz)
 ARG silva_ssu_nr99_filename="SILVA_138.1_SSURef_NR99_tax_silva"
+
 RUN  cd databases \
   && curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/Exports/${silva_ssu_nr99_filename}.fasta.gz -O \
   && gunzip *
 
-
 # maximum cpu to use in database generation
 ARG max_cpu=48
-
 RUN  cd databases \
   && generate_databases.sh ${silva_ssu_nr99_filename}.fasta SSU ${max_cpu}
 
