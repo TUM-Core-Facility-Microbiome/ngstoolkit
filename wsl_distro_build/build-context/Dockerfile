@@ -44,7 +44,9 @@ ARG silva_release="release_138_1"
 ARG silva_ssu_nr99_file="SILVA_138.1_SSURef_NR99_tax_silva.fasta.gz"
 RUN  cd databases \
   && curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/Exports/${silva_ssu_nr99_file} -O \
-  && gunzip * \
+  && gunzip *
+
+RUN  cd databases \
   && generate_databases.sh SILVA_*_SSURef_*.fasta SSU
 
 # spikes database
