@@ -46,7 +46,7 @@ ARG silva_ssu_nr99_filename="SILVA_138.1_SSURef_NR99_tax_silva"
 
 RUN  cd databases \
   && curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/Exports/${silva_ssu_nr99_filename}.fasta.gz -O \
-  && gunzip *
+  && gunzip *.gz
 
 # As docker requires at least one file to be copied, we also copy the dockerfile which must always exist
 COPY Dockerfile silva_${silva_release}-arc-16s-id95.fasta silva_${silva_release}-euk-18s-id95.fasta silva_${silva_release}-bac-16s-id90.fasta databases/
@@ -62,7 +62,7 @@ RUN  cd databases \
 ARG silva_arb_file="SILVA_138.1_SSURef_NR99_12_06_20_opt.arb.gz"
 RUN  cd databases \
   && curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/ARB_files/${silva_arb_file} -O \
-  && gunzip *
+  && gunzip *.gz
 
 
 # spikes database
