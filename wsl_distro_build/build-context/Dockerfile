@@ -39,7 +39,7 @@ RUN  mkdir databases
 COPY app/generate_databases.sh generate_databases.sh
 RUN  chmod -R +x /usr/local/bin
 
-# databases for filtering
+# silva
 ARG silva_release="release_138_1"
 # file without file extension (.fasta.gz)
 ARG silva_ssu_nr99_filename="SILVA_138.1_SSURef_NR99_tax_silva"
@@ -48,6 +48,15 @@ RUN  cd databases \
   && curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/Exports/${silva_ssu_nr99_filename}.fasta.gz -O \
   && gunzip *.gz
 
+
+# arb
+ARG silva_arb_file="SILVA_138.1_SSURef_NR99_12_06_20_opt.arb.gz"
+RUN  cd databases \
+  && curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/ARB_files/${silva_arb_file} -O \
+  && gunzip *.gz
+
+
+# filtered dbs
 # As docker requires at least one file to be copied, we also copy the dockerfile which must always exist
 COPY Dockerfile silva_${silva_release}-arc-16s-id95.fasta* silva_${silva_release}-euk-18s-id95.fasta* silva_${silva_release}-bac-16s-id90.fasta* databases/
 
@@ -56,13 +65,6 @@ ARG max_cpu=48
 RUN  cd databases \
   && if [ -f silva_${silva_release}-arc-16s-id95.fasta ] && [ -f silva_${silva_release}-euk-18s-id95.fasta ] && [ -f silva_${silva_release}-bac-16s-id90.fasta ]; then echo "Databases exist"; exit 0; fi \
   && generate_databases.sh ${silva_ssu_nr99_filename}.fasta ${silva_release} SSU ${max_cpu}
-
-
-# arb
-ARG silva_arb_file="SILVA_138.1_SSURef_NR99_12_06_20_opt.arb.gz"
-RUN  cd databases \
-  && curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/ARB_files/${silva_arb_file} -O \
-  && gunzip *.gz
 
 
 # spikes database
