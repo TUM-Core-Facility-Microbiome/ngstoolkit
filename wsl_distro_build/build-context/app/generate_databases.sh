@@ -49,6 +49,7 @@ for i in "${!target_domains[@]}"; do
   pct=${id:2:3}
   echo ">>> Clustering at ${pct}%"
   sumaclust -l -p ${max_cpu} -t "${id}" -F "${filename}"_sumaclust_"${pct}".fasta "${filename}".fasta
+  rm "${filename}".fasta
 
   # extracting cluster centroids
   echo ">>> Extracting cluster centroid sequences"
@@ -57,4 +58,5 @@ for i in "${!target_domains[@]}"; do
            | grep "cluster_center=True;" \
            | tr "\t" "\n" \
            > "${filename}"-id"${pct}".fasta
+  rm "${filename}"_sumaclust_"${pct}".fasta
 done
