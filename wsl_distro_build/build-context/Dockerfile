@@ -67,6 +67,24 @@ COPY app/spikes.fasta databases/spikes.fasta
 
 
 ##############################################
+# GETTING USEARCH ############################
+##############################################
+ARG usearch_version="11.0.667"
+
+# If you have a 64 bit version put the executable in the app folder; 32 bit executable will be not downloaded then
+# As docker requires at least one file to be copied, we also copy the dockerfile which must always exist
+COPY Dockerfile app/usearch${usearch_version}_i86linux64* ./
+
+RUN  if [ -f usearch${usearch_version}_i86linux64 ]; then mv usearch${usearch_version}_i86linux64 usearch; exit 0; fi \
+  && curl -L https://www.drive5.com/downloads/usearch${usearch_version}_i86linux32.gz -o usearch.gz \
+  && if [ $(md5sum ./usearch.gz) != "27cc6b779b899daa5d17a95fd0eeb69c ./usearch.gz" ]; then echo "usearch32 hash mismatch"; exit 1; fi \
+  && gunzip usearch.gz
+
+# udb database
+RUN  usearch -makeudb_usearch databases/${silva_ssu_nr99_filename}.fasta -output ${silva_ssu_nr99_filename}.udb
+
+
+##############################################
 # GETTING SINA ###############################
 ##############################################
 ARG sina_version="1.7.2"
@@ -106,21 +124,6 @@ RUN  curl -L https://github.com/biocore/sortmerna/releases/download/v${sortmerna
   && tar -zxvf ./sortmerna.tar.gz \
   && ln -s sortmerna-${sortmerna_version}-*/bin/sortmerna sortmerna \
   && rm -rf ./sortmerna.tar.gz
-
-
-##############################################
-# GETTING USEARCH ############################
-##############################################
-ARG usearch_version="11.0.667"
-RUN  curl -L https://www.drive5.com/downloads/usearch${usearch_version}_i86linux32.gz -o usearch.gz \
-  && if [ $(md5sum ./usearch.gz) != "27cc6b779b899daa5d17a95fd0eeb69c ./usearch.gz" ]; then echo "usearch32 hash mismatch"; exit 1; fi \
-  && gunzip usearch.gz
-
-# If you have a 64 bit version put the executable in the app folder; this will replace the 32 bit executable
-COPY app/usearch${usearch_version}_i86linux64* usearch
-
-# udb database
-RUN  usearch -makeudb_usearch databases/${silva_ssu_nr99_filename}.fasta -output ${silva_ssu_nr99_filename}.udb
 
 
 ##############################################
