@@ -84,7 +84,8 @@ RUN  if [ -f usearch${usearch_version}_i86linux64 ]; then mv usearch${usearch_ve
   && gunzip usearch.gz
 
 # udb database
-RUN  usearch -makeudb_usearch databases/${silva_ssu_nr99_filename}.fasta -output ${silva_ssu_nr99_filename}.udb
+RUN  chmod -R +x /usr/local/bin \
+  && usearch -makeudb_usearch databases/${silva_ssu_nr99_filename}.fasta -output ${silva_ssu_nr99_filename}.udb
 
 
 ##############################################
