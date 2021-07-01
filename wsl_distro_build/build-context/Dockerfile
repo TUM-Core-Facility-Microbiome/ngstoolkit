@@ -17,6 +17,8 @@ RUN  apt-get update \
   gzip \
   # dependencies for spikes_normalization
   python3-pandas \
+  # dependencies for database building
+  sumaclust \
   # perl modules
   bioperl libswitch-perl \
   # clean
@@ -28,6 +30,23 @@ RUN  apt-get update \
 ##############################################
 WORKDIR /usr/local/bin
 RUN  mkdir ./src
+
+
+##############################################
+# DATABASES ##################################
+##############################################
+RUN  mkdir databases
+
+COPY app/generate_databases.sh generate_databases.sh
+ARG silva_release="release_138_1"
+ARG silva_ssu_nr99_file="SILVA_138.1_SSURef_NR99_tax_silva.fasta.gz"
+RUN  cd databases \
+  && curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/Exports/${silva_ssu_nr99_file} -O \
+  && gunzip * \
+  && generate_databases.sh SILVA_*_SSURef_*.fasta SSU
+
+# spikes database
+COPY app/spikes.fasta databases/spikes.fasta
 
 
 ##############################################
@@ -85,12 +104,6 @@ COPY app/usearch${usearch_version}_i86linux64* usearch
 
 
 ##############################################
-# DATABASES ##################################
-##############################################
-RUN  mkdir databases
-
-
-##############################################
 # FILE IMPORT ################################
 ##############################################
 # helper scripts
@@ -111,8 +124,6 @@ COPY app/offline-analysis-runner.py .
 # spike scripts
 COPY app/rm_spikes.py .
 COPY app/spikes_normalizer.py .
-# spikes database
-COPY app/spikes.fasta databases/spikes.fasta
 
 
 ##############################################
