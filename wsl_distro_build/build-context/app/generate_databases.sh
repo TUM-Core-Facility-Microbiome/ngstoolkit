@@ -4,6 +4,7 @@
 
 ref_db=$1  # SILVA ref database as FASTA file
 subunit=$2  # SSU or LSU
+max_cpu=48
 
 
 target_domains=( "Bacteria" "Eukaryota" "Archaea" )
@@ -47,7 +48,7 @@ for i in "${!target_domains[@]}"; do
   # clustering
   pct=${id:2:3}
   echo ">>> Clustering at ${pct}%"
-  sumaclust -l -p 40 -t ${id} -F "${filename}"_sumaclust_"${pct}".fasta "${filename}".fasta
+  sumaclust -l -p ${max_cpu} -t ${id} -F "${filename}"_sumaclust_"${pct}".fasta "${filename}".fasta
 
   # extracting cluster centroids
   echo ">>> Extracting cluster centroid sequences"
