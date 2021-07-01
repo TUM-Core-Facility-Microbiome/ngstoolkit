@@ -48,9 +48,12 @@ RUN  cd databases \
   && curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/Exports/${silva_ssu_nr99_filename}.fasta.gz -O \
   && gunzip *
 
+COPY Dockerfile silva_${silva_release}-arc-16s-id95.fasta silva_${silva_release}-euk-18s-id95.fasta silva_${silva_release}-bac-16s-id90.fasta databases/
+
 # maximum cpu to use in database generation
 ARG max_cpu=48
 RUN  cd databases \
+  && if [ -f silva_${silva_release}-arc-16s-id95.fasta ] && [ -f silva_${silva_release}-euk-18s-id95.fasta ] && [ -f silva_${silva_release}-bac-16s-id90.fasta ]; then echo "Databases exist"; exit 0; fi \
   && generate_databases.sh ${silva_ssu_nr99_filename}.fasta ${silva_release} SSU ${max_cpu}
 
 
