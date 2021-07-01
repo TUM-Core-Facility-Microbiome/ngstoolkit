@@ -38,6 +38,8 @@ RUN  mkdir ./src
 RUN  mkdir databases
 
 COPY app/generate_databases.sh generate_databases.sh
+RUN  chmod -R +x /usr/local/bin
+
 ARG silva_release="release_138_1"
 ARG silva_ssu_nr99_file="SILVA_138.1_SSURef_NR99_tax_silva.fasta.gz"
 RUN  cd databases \
