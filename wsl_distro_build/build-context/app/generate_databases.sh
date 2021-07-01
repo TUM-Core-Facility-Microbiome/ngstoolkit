@@ -8,7 +8,7 @@ subunit=$3  # SSU or LSU
 max_cpu=$4  # max cpu to use in sumaclust
 
 
-target_domains=( "Bacteria" "Eukaryota" "Archaea" )
+target_domains=( "Archaea" "Eukaryota" "Bacteria" )
 source="silva_${silva_release}"
 if [ "${subunit}" = "SSU" ]; then
   filenames=( "${source}-bac-16s" "${source}-euk-18s" "${source}-arc-16s" )
