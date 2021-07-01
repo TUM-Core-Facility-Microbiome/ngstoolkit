@@ -49,7 +49,7 @@ RUN  cd databases \
   && gunzip *.gz
 
 # As docker requires at least one file to be copied, we also copy the dockerfile which must always exist
-COPY Dockerfile silva_${silva_release}-arc-16s-id95.fasta silva_${silva_release}-euk-18s-id95.fasta silva_${silva_release}-bac-16s-id90.fasta databases/
+COPY Dockerfile silva_${silva_release}-arc-16s-id95.fasta* silva_${silva_release}-euk-18s-id95.fasta* silva_${silva_release}-bac-16s-id90.fasta* databases/
 
 # maximum cpu to use in database generation
 ARG max_cpu=48
