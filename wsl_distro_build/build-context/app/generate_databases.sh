@@ -4,7 +4,7 @@
 
 ref_db=$1  # SILVA ref database as FASTA file
 subunit=$2  # SSU or LSU
-max_cpu=48
+max_cpu=$3  # max cpu to use in sumaclust
 
 
 target_domains=( "Bacteria" "Eukaryota" "Archaea" )

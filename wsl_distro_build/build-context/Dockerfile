@@ -1,5 +1,6 @@
 FROM debian:buster
 
+ARG max_cpu=48
 
 ##############################################
 # GETTING APT PACKAGES #######################
@@ -49,7 +50,7 @@ RUN  cd databases \
   && gunzip *
 
 RUN  cd databases \
-  && generate_databases.sh ${silva_ssu_nr99_filename}.fasta SSU
+  && generate_databases.sh ${silva_ssu_nr99_filename}.fasta SSU ${max_cpu}
 
 
 # arb
