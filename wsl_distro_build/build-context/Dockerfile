@@ -32,24 +32,6 @@ RUN  mkdir ./src
 
 
 ##############################################
-# GETTING USEARCH ############################
-##############################################
-WORKDIR /usr/local/bin
-
-ARG usearch_version="11.0.667"
-
-# If you have a 64 bit version put the executable in the app folder; 32 bit executable will be not downloaded then
-# As docker requires at least one file to be copied, we also copy the dockerfile which must always exist
-COPY Dockerfile opt/usearch${usearch_version}_i86linux64* ./
-RUN  rm ./Dockerfile
-
-RUN  if [ -f usearch${usearch_version}_i86linux64 ]; then mv usearch${usearch_version}_i86linux64 usearch; exit 0; fi \
-  && curl -L https://www.drive5.com/downloads/usearch${usearch_version}_i86linux32.gz -o usearch.gz \
-  && if [ $(md5sum ./usearch.gz) != "27cc6b779b899daa5d17a95fd0eeb69c ./usearch.gz" ]; then echo "usearch32 hash mismatch"; exit 1; fi \
-  && gunzip usearch.gz
-
-
-##############################################
 # GETTING SINA ###############################
 ##############################################
 WORKDIR /usr/local/bin
@@ -98,6 +80,24 @@ RUN  curl -L https://github.com/biocore/sortmerna/releases/download/v${sortmerna
   && tar -zxvf ./sortmerna.tar.gz \
   && ln -s sortmerna-${sortmerna_version}-*/bin/sortmerna sortmerna \
   && rm -rf ./sortmerna.tar.gz
+
+
+##############################################
+# GETTING USEARCH ############################
+##############################################
+WORKDIR /usr/local/bin
+
+ARG usearch_version="11.0.667"
+
+# If you have a 64 bit version put the executable in the app folder; 32 bit executable will be not downloaded then
+# As docker requires at least one file to be copied, we also copy the dockerfile which must always exist
+COPY Dockerfile opt/usearch${usearch_version}_i86linux64* ./
+RUN  rm ./Dockerfile
+
+RUN  if [ -f usearch${usearch_version}_i86linux64 ]; then mv usearch${usearch_version}_i86linux64 usearch; exit 0; fi \
+  && curl -L https://www.drive5.com/downloads/usearch${usearch_version}_i86linux32.gz -o usearch.gz \
+  && if [ $(md5sum ./usearch.gz) != "27cc6b779b899daa5d17a95fd0eeb69c ./usearch.gz" ]; then echo "usearch32 hash mismatch"; exit 1; fi \
+  && gunzip usearch.gz
 
 
 ##############################################
