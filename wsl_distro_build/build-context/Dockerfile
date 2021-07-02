@@ -83,6 +83,7 @@ RUN  curl -L https://downloads.sourceforge.net/project/bowtie-bio/bowtie2/${bowt
   && if [ $(md5sum ./bowtie2.zip) != "6b73a78053ce4f30d53bf95c7358d03e ./bowtie2.zip" ]; then echo "bowtie2 hash mismatch"; exit 1; fi \
   && unzip bowtie2.zip \
   && ln -s bowtie2-*-linux-x86_64/bowtie2 bowtie2 \
+  && ln -s bowtie2-*-linux-x86_64/bowtie2-build bowtie2-build \
   && rm -rf bowtie2.zip
 
 
