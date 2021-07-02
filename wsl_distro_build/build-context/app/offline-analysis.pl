@@ -610,15 +610,15 @@ if ($reference_sequence eq "16S")
 {
     print ">>> Filtering out non-16S OTUs ... ";
     logToStatusFile("Filter non-16S sequences...");
-    $command = $bin_dir . "/sortmerna-4.2.0-Linux/bin/sortmerna --ref $ref16RNAdb_1 --ref $ref16RNAdb_2 --reads $pathout/$nonchimeric_otus_03_filename --fastx --aligned $pathout/$filterGoodFolderName --other $pathout/non16SrRNA --workdir /tmp/sortmerna_run";
+    $command = $bin_dir . "/sortmerna --ref $ref16RNAdb_1 --ref $ref16RNAdb_2 --reads $pathout/$nonchimeric_otus_03_filename --fastx --aligned $pathout/$filterGoodFolderName --other $pathout/non16SrRNA --workdir /tmp/sortmerna_run";
 } elsif ($reference_sequence eq "18S") {
     print ">>> Filtering out non-18S OTUs ... ";
     logToStatusFile("Filter non-18S sequences...");
-    $command = $bin_dir . "/sortmerna-4.2.0-Linux/bin/sortmerna --ref $ref18db --reads $pathout/$nonchimeric_otus_03_filename --fastx --aligned $pathout/$filterGoodFolderName --other $pathout/non18SrRNA --workdir /tmp/sortmerna_run";
+    $command = $bin_dir . "/sortmerna --ref $ref18db --reads $pathout/$nonchimeric_otus_03_filename --fastx --aligned $pathout/$filterGoodFolderName --other $pathout/non18SrRNA --workdir /tmp/sortmerna_run";
 } else {
     print ">>> Filtering using submitted reference file ... ";
     logToStatusFile("Filter out sequences not in reference...");
-    $command = $bin_dir . "/sortmerna-4.2.0-Linux/bin/sortmerna --ref $reference_sequence --reads $pathout/$nonchimeric_otus_03_filename --fastx --aligned $pathout/$filterGoodFolderName --other $pathout/filtered_out_by_reference --workdir /tmp/sortmerna_run";
+    $command = $bin_dir . "/sortmerna --ref $reference_sequence --reads $pathout/$nonchimeric_otus_03_filename --fastx --aligned $pathout/$filterGoodFolderName --other $pathout/filtered_out_by_reference --workdir /tmp/sortmerna_run";
 }
 @output = `$command`;
 if ($?) {
