@@ -93,7 +93,7 @@ def calc_spikes(r1_and_r2_file: FastqPair, mapping_lines, col_sample, col_weight
             pass
     else:
         # run bowtie2 to find spikes
-        cmd = ["bowtie2", "-x", "/usr/local/databases/spikes/spikesIndex", "-1", fastq_R1, "-2", fastq_R2, "--al-conc", fastq_aligned, "--un-conc",
+        cmd = ["bowtie2", "-x", "/usr/local/databases/spikes/idx/spikesIndex", "-1", fastq_R1, "-2", fastq_R2, "--al-conc", fastq_aligned, "--un-conc",
                fastq_unaligned]
         stdout, stderr = call(cmd)
         # print(stdout)
