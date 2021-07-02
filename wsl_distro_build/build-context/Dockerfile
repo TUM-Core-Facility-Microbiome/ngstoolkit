@@ -168,9 +168,10 @@ RUN  if [ -f silva_${silva_release}-arc-16s-id95.fasta ] && [ -f silva_${silva_r
 
 ### spikes database
 WORKDIR /usr/local/databases/spikes
-
 COPY app/spikes.fasta .
 
+WORKDIR /usr/local/databases/spikes/idx
+RUN  bowtie2-build /usr/local/databases/spikes/spikes.fasta spikesIndex
 
 ##############################################
 # WRITE VERSION INFO #########################
