@@ -101,36 +101,6 @@ RUN  curl -L https://github.com/biocore/sortmerna/releases/download/v${sortmerna
 
 
 ##############################################
-# FILE IMPORT ################################
-##############################################
-WORKDIR /usr/local/bin
-
-# helper scripts
-COPY app/report_versions.sh .
-COPY app/mount.py .
-COPY app/umount.py .
-COPY app/set_status.py .
-
-# readcounting scripts
-COPY app/readcount.py .
-COPY app/filter_readcount.py .
-
-# offline analysis scripts
-COPY app/runDeMux.pl .
-COPY app/offline-analysis.pl .
-COPY app/offline-analysis-runner.py .
-
-# spike scripts
-COPY app/rm_spikes.py .
-COPY app/spikes_normalizer.py .
-
-# silva subdatabase generation
-COPY app/generate_databases.sh .
-
-RUN  chmod -R +x /usr/local/bin
-
-
-##############################################
 # DATABASES ##################################
 ##############################################
 WORKDIR /usr/local/databases
@@ -172,6 +142,33 @@ COPY app/spikes.fasta .
 
 WORKDIR /usr/local/databases/spikes/idx
 RUN  bowtie2-build /usr/local/databases/spikes/spikes.fasta spikes
+
+
+##############################################
+# FILE IMPORT ################################
+##############################################
+WORKDIR /usr/local/bin
+
+# helper scripts
+COPY app/report_versions.sh .
+COPY app/mount.py .
+COPY app/umount.py .
+COPY app/set_status.py .
+
+# readcounting scripts
+COPY app/readcount.py .
+COPY app/filter_readcount.py .
+
+# offline analysis scripts
+COPY app/runDeMux.pl .
+COPY app/offline-analysis.pl .
+COPY app/offline-analysis-runner.py .
+
+# spike scripts
+COPY app/rm_spikes.py .
+COPY app/spikes_normalizer.py .
+
+RUN  chmod -R +x /usr/local/bin
 
 
 ##############################################
