@@ -127,8 +127,8 @@ RUN  chmod -R +x /usr/local/bin \
   && usearch -makeudb_usearch ../${silva_ssu_nr99_filename}.fasta -output ${silva_ssu_nr99_filename}.udb
 
 # filtered dbs
-# As docker requires at least one file to be copied, we also copy the dockerfile which must always exist
 WORKDIR /usr/local/databases/silva/build
+# As docker requires at least one file to be copied, we also copy the dockerfile which must always exist
 COPY Dockerfile opt/silva_${silva_release}-arc-16s-id95.fasta* opt/silva_${silva_release}-euk-18s-id95.fasta* opt/silva_${silva_release}-bac-16s-id90.fasta* ./
 RUN  rm Dockerfile
 
