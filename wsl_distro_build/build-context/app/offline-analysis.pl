@@ -733,7 +733,7 @@ print "Done.\n\n";
 print ">>> Cleanup and report ... ";
 logToStatusFile("Clean up...");
 #copy the analysis readme file to the job output
-system("cp $AnalysisReadMe $pathout/ReadMe.pdf") == 0 or terminate(3);
+# system("cp $AnalysisReadMe $pathout/ReadMe.pdf") == 0 or terminate(3);
 
 #build the new stat file 
 buildStat();
