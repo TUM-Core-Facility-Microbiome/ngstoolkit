@@ -32,49 +32,6 @@ RUN  mkdir ./src
 
 
 ##############################################
-# DATABASES ##################################
-##############################################
-COPY app/generate_databases.sh generate_databases.sh
-RUN  chmod -R +x /usr/local/bin
-
-
-WORKDIR /usr/local/databases
-
-# silva
-WORKDIR /usr/local/databases/silva
-
-ARG silva_release="release_138_1"
-# file without file extension (.fasta.gz)
-ARG silva_ssu_nr99_filename="SILVA_138.1_SSURef_NR99_tax_silva"
-
-RUN  curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/Exports/${silva_ssu_nr99_filename}.fasta.gz -O \
-  && gunzip *.gz
-
-
-# arb
-ARG silva_arb_file="SILVA_138.1_SSURef_NR99_12_06_20_opt.arb.gz"
-RUN  curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/ARB_files/${silva_arb_file} -O \
-  && gunzip *.gz
-
-
-# filtered dbs
-# As docker requires at least one file to be copied, we also copy the dockerfile which must always exist
-COPY Dockerfile opt/silva_${silva_release}-arc-16s-id95.fasta* opt/silva_${silva_release}-euk-18s-id95.fasta* opt/silva_${silva_release}-bac-16s-id90.fasta* ./
-RUN  rm Dockerfile
-
-# maximum cpu to use in database generation
-ARG max_cpu=48
-RUN  if [ -f silva_${silva_release}-arc-16s-id95.fasta ] && [ -f silva_${silva_release}-euk-18s-id95.fasta ] && [ -f silva_${silva_release}-bac-16s-id90.fasta ]; then echo "Databases exist"; exit 0; fi \
-  && generate_databases.sh ${silva_ssu_nr99_filename}.fasta ${silva_release} SSU ${max_cpu}
-
-
-# spikes database
-WORKDIR /usr/local/databases/spikes
-
-COPY app/spikes.fasta .
-
-
-##############################################
 # GETTING USEARCH ############################
 ##############################################
 WORKDIR /usr/local/bin
@@ -90,10 +47,6 @@ RUN  if [ -f usearch${usearch_version}_i86linux64 ]; then mv usearch${usearch_ve
   && curl -L https://www.drive5.com/downloads/usearch${usearch_version}_i86linux32.gz -o usearch.gz \
   && if [ $(md5sum ./usearch.gz) != "27cc6b779b899daa5d17a95fd0eeb69c ./usearch.gz" ]; then echo "usearch32 hash mismatch"; exit 1; fi \
   && gunzip usearch.gz
-
-# udb database
-RUN  chmod -R +x /usr/local/bin \
-  && usearch -makeudb_usearch databases/${silva_ssu_nr99_filename}.fasta -output ${silva_ssu_nr99_filename}.udb
 
 
 ##############################################
@@ -169,6 +122,53 @@ COPY app/offline-analysis-runner.py .
 # spike scripts
 COPY app/rm_spikes.py .
 COPY app/spikes_normalizer.py .
+
+# silva subdatabase generation
+COPY app/generate_databases.sh .
+
+RUN  chmod -R +x /usr/local/bin
+
+
+##############################################
+# DATABASES ##################################
+##############################################
+WORKDIR /usr/local/databases
+
+# silva
+WORKDIR /usr/local/databases/silva
+
+ARG silva_release="release_138_1"
+# file without file extension (.fasta.gz)
+ARG silva_ssu_nr99_filename="SILVA_138.1_SSURef_NR99_tax_silva"
+
+# fasta
+RUN  curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/Exports/${silva_ssu_nr99_filename}.fasta.gz -O \
+  && gunzip *.gz
+
+# arb
+ARG silva_arb_file="SILVA_138.1_SSURef_NR99_12_06_20_opt.arb.gz"
+RUN  curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/ARB_files/${silva_arb_file} -O \
+  && gunzip *.gz
+
+# udb database
+RUN  chmod -R +x /usr/local/bin \
+  && usearch -makeudb_usearch databases/${silva_ssu_nr99_filename}.fasta -output ${silva_ssu_nr99_filename}.udb
+
+# filtered dbs
+# As docker requires at least one file to be copied, we also copy the dockerfile which must always exist
+COPY Dockerfile opt/silva_${silva_release}-arc-16s-id95.fasta* opt/silva_${silva_release}-euk-18s-id95.fasta* opt/silva_${silva_release}-bac-16s-id90.fasta* ./
+RUN  rm Dockerfile
+
+# maximum cpu to use in database generation
+ARG max_cpu=48
+RUN  if [ -f silva_${silva_release}-arc-16s-id95.fasta ] && [ -f silva_${silva_release}-euk-18s-id95.fasta ] && [ -f silva_${silva_release}-bac-16s-id90.fasta ]; then echo "Databases exist"; exit 0; fi \
+  && generate_databases.sh ${silva_ssu_nr99_filename}.fasta ${silva_release} SSU ${max_cpu}
+
+
+# spikes database
+WORKDIR /usr/local/databases/spikes
+
+COPY app/spikes.fasta .
 
 
 ##############################################
