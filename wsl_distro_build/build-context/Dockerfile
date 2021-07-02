@@ -122,18 +122,20 @@ RUN  curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}
   && gunzip *.gz
 
 # udb database
+WORKDIR /usr/local/databases/silva/idx
 RUN  chmod -R +x /usr/local/bin \
-  && usearch -makeudb_usearch ${silva_ssu_nr99_filename}.fasta -output ${silva_ssu_nr99_filename}.udb
+  && usearch -makeudb_usearch ../${silva_ssu_nr99_filename}.fasta -output ${silva_ssu_nr99_filename}.udb
 
 # filtered dbs
 # As docker requires at least one file to be copied, we also copy the dockerfile which must always exist
+WORKDIR /usr/local/databases/silva/build
 COPY Dockerfile opt/silva_${silva_release}-arc-16s-id95.fasta* opt/silva_${silva_release}-euk-18s-id95.fasta* opt/silva_${silva_release}-bac-16s-id90.fasta* ./
 RUN  rm Dockerfile
 
 # maximum cpu to use in database generation
 ARG max_cpu=48
 RUN  if [ -f silva_${silva_release}-arc-16s-id95.fasta ] && [ -f silva_${silva_release}-euk-18s-id95.fasta ] && [ -f silva_${silva_release}-bac-16s-id90.fasta ]; then echo "Databases exist"; exit 0; fi \
-  && generate_databases.sh ${silva_ssu_nr99_filename}.fasta ${silva_release} SSU ${max_cpu}
+  && generate_databases.sh ../${silva_ssu_nr99_filename}.fasta ${silva_release} SSU ${max_cpu}
 
 
 ### spikes database
