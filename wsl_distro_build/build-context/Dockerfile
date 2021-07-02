@@ -34,47 +34,47 @@ RUN  mkdir ./src
 ##############################################
 # DATABASES ##################################
 ##############################################
-RUN  mkdir databases
-
 COPY app/generate_databases.sh generate_databases.sh
 RUN  chmod -R +x /usr/local/bin
+
+
+WORKDIR databases
 
 # silva
 ARG silva_release="release_138_1"
 # file without file extension (.fasta.gz)
 ARG silva_ssu_nr99_filename="SILVA_138.1_SSURef_NR99_tax_silva"
 
-RUN  cd databases \
-  && curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/Exports/${silva_ssu_nr99_filename}.fasta.gz -O \
+RUN  curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/Exports/${silva_ssu_nr99_filename}.fasta.gz -O \
   && gunzip *.gz
 
 
 # arb
 ARG silva_arb_file="SILVA_138.1_SSURef_NR99_12_06_20_opt.arb.gz"
-RUN  cd databases \
-  && curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/ARB_files/${silva_arb_file} -O \
+RUN  curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/ARB_files/${silva_arb_file} -O \
   && gunzip *.gz
 
 
 # filtered dbs
 # As docker requires at least one file to be copied, we also copy the dockerfile which must always exist
-COPY Dockerfile opt/silva_${silva_release}-arc-16s-id95.fasta* opt/silva_${silva_release}-euk-18s-id95.fasta* opt/silva_${silva_release}-bac-16s-id90.fasta* databases/
-RUN  rm databases/Dockerfile
+COPY Dockerfile opt/silva_${silva_release}-arc-16s-id95.fasta* opt/silva_${silva_release}-euk-18s-id95.fasta* opt/silva_${silva_release}-bac-16s-id90.fasta* ./
+RUN  rm Dockerfile
 
 # maximum cpu to use in database generation
 ARG max_cpu=48
-RUN  cd databases \
-  && if [ -f silva_${silva_release}-arc-16s-id95.fasta ] && [ -f silva_${silva_release}-euk-18s-id95.fasta ] && [ -f silva_${silva_release}-bac-16s-id90.fasta ]; then echo "Databases exist"; exit 0; fi \
+RUN  if [ -f silva_${silva_release}-arc-16s-id95.fasta ] && [ -f silva_${silva_release}-euk-18s-id95.fasta ] && [ -f silva_${silva_release}-bac-16s-id90.fasta ]; then echo "Databases exist"; exit 0; fi \
   && generate_databases.sh ${silva_ssu_nr99_filename}.fasta ${silva_release} SSU ${max_cpu}
 
 
 # spikes database
-COPY app/spikes.fasta databases/spikes.fasta
+COPY app/spikes.fasta .
 
 
 ##############################################
 # GETTING USEARCH ############################
 ##############################################
+WORKDIR /usr/local/bin
+
 ARG usearch_version="11.0.667"
 
 # If you have a 64 bit version put the executable in the app folder; 32 bit executable will be not downloaded then
@@ -95,6 +95,8 @@ RUN  chmod -R +x /usr/local/bin \
 ##############################################
 # GETTING SINA ###############################
 ##############################################
+WORKDIR /usr/local/bin
+
 ARG sina_version="1.7.2"
 RUN  curl -L https://github.com/epruesse/SINA/releases/download/v${sina_version}/sina-${sina_version}-linux.tar.gz -o sina.tar.gz \
   && if [ $(md5sum ./sina.tar.gz) != "aa1aeffaf71a05cb764b0fbe80e4818b ./sina.tar.gz" ]; then echo "sina hash mismatch"; exit 1; fi \
@@ -106,6 +108,8 @@ RUN  curl -L https://github.com/epruesse/SINA/releases/download/v${sina_version}
 ##############################################
 # GETTING FASTTREE ###########################
 ##############################################
+WORKDIR /usr/local/bin
+
 ARG fasttree_version="2.1.11"
 RUN  curl -L http://www.microbesonline.org/fasttree/FastTree -o FastTree_${fasttree_version} \
   && if [ $(md5sum ./FastTree_${fasttree_version}) != "e218e38103fa841295b315f24e9a2b9f ./FastTree" ]; then echo "FastTree hash mismatch"; exit 1; fi \
@@ -115,6 +119,8 @@ RUN  curl -L http://www.microbesonline.org/fasttree/FastTree -o FastTree_${fastt
 ##############################################
 # GETTING BOWTIE2 ############################
 ##############################################
+WORKDIR /usr/local/bin
+
 ARG bowtie2_version="2.4.4"
 RUN  curl -L https://downloads.sourceforge.net/project/bowtie-bio/bowtie2/${bowtie2_version}/bowtie2-${bowtie2_version}-linux-x86_64.zip -o bowtie2.zip \
   && if [ $(md5sum ./bowtie2.zip) != "6b73a78053ce4f30d53bf95c7358d03e ./bowtie2.zip" ]; then echo "bowtie2 hash mismatch"; exit 1; fi \
@@ -126,6 +132,8 @@ RUN  curl -L https://downloads.sourceforge.net/project/bowtie-bio/bowtie2/${bowt
 ##############################################
 # GETTING SORTMERNA ##########################
 ##############################################
+WORKDIR /usr/local/bin
+
 ARG sortmerna_version="4.3.3"
 RUN  curl -L https://github.com/biocore/sortmerna/releases/download/v${sortmerna_version}/sortmerna-${sortmerna_version}-Linux.tar.gz -o sortmerna.tar.gz \
   && if [ $(md5sum ./sortmerna.tar.gz) != "85b659dc000718e0b3c0de842dd1bb6c ./sortmerna_source_code.tar.gz" ]; then echo "sortmerna hash mismatch"; exit 1; fi \
@@ -137,6 +145,8 @@ RUN  curl -L https://github.com/biocore/sortmerna/releases/download/v${sortmerna
 ##############################################
 # FILE IMPORT ################################
 ##############################################
+WORKDIR /usr/local/bin
+
 # helper scripts
 COPY app/report_versions.sh .
 COPY app/mount.py .
@@ -160,6 +170,8 @@ COPY app/spikes_normalizer.py .
 ##############################################
 # WRITE VERSION INFO #########################
 ##############################################
+WORKDIR /usr/local/bin
+
 ARG ngstoolkit_version
 RUN  echo "${ngstoolkit_version}" > wsl_distro_version.txt
 RUN  echo "This is a clean install of ${ngstoolkit_version}" > status.txt
