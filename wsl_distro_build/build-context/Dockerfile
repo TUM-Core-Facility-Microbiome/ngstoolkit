@@ -152,7 +152,7 @@ RUN  curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}
 
 # udb database
 RUN  chmod -R +x /usr/local/bin \
-  && usearch -makeudb_usearch databases/${silva_ssu_nr99_filename}.fasta -output ${silva_ssu_nr99_filename}.udb
+  && usearch -makeudb_usearch ${silva_ssu_nr99_filename}.fasta -output ${silva_ssu_nr99_filename}.udb
 
 # filtered dbs
 # As docker requires at least one file to be copied, we also copy the dockerfile which must always exist
