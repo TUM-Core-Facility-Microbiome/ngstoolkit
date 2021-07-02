@@ -134,7 +134,7 @@ RUN  chmod -R +x /usr/local/bin
 ##############################################
 WORKDIR /usr/local/databases
 
-# silva
+### silva
 WORKDIR /usr/local/databases/silva
 
 ARG silva_release="release_138_1"
@@ -165,7 +165,7 @@ RUN  if [ -f silva_${silva_release}-arc-16s-id95.fasta ] && [ -f silva_${silva_r
   && generate_databases.sh ${silva_ssu_nr99_filename}.fasta ${silva_release} SSU ${max_cpu}
 
 
-# spikes database
+### spikes database
 WORKDIR /usr/local/databases/spikes
 
 COPY app/spikes.fasta .
