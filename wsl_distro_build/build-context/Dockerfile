@@ -173,6 +173,7 @@ COPY app/spikes.fasta .
 WORKDIR /usr/local/databases/spikes/idx
 RUN  bowtie2-build /usr/local/databases/spikes/spikes.fasta spikesIndex
 
+
 ##############################################
 # WRITE VERSION INFO #########################
 ##############################################
