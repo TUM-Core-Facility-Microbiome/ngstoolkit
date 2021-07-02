@@ -38,9 +38,11 @@ COPY app/generate_databases.sh generate_databases.sh
 RUN  chmod -R +x /usr/local/bin
 
 
-WORKDIR databases
+WORKDIR /usr/local/databases
 
 # silva
+WORKDIR /usr/local/databases/silva
+
 ARG silva_release="release_138_1"
 # file without file extension (.fasta.gz)
 ARG silva_ssu_nr99_filename="SILVA_138.1_SSURef_NR99_tax_silva"
@@ -67,6 +69,8 @@ RUN  if [ -f silva_${silva_release}-arc-16s-id95.fasta ] && [ -f silva_${silva_r
 
 
 # spikes database
+WORKDIR /usr/local/databases/spikes
+
 COPY app/spikes.fasta .
 
 

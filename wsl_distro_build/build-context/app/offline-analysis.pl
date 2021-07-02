@@ -46,11 +46,11 @@ my $bin_dir = "/usr/local/bin";
 my $usearch = "$bin_dir/usearch";
 
 # default databases
-my $db =  $bin_dir . "/databases/SILVA_138.1_SSURef_NR99_tax_silva.udb";  # the reference db for chimera checks
-my $ref16RNAdb_1 = $bin_dir . "/databases/silva_release_138_1-bac-16s-id90.fasta";
-my $ref16RNAdb_2 = $bin_dir . "/databases/silva_release_138_1-arc-16s-id95.fasta";
-my $ref18db = $bin_dir . "/databases/silva_release_138_1-euk-18s-id95.fasta";
-my $silva_db_arb = $bin_dir . "/databases/SILVA_138.1_SSURef_NR99_12_06_20_opt.arb";
+my $db =  "/usr/local/databases/silva/SILVA_138.1_SSURef_NR99_tax_silva.udb";  # the reference db for chimera checks
+my $ref16RNAdb_1 = "/usr/local/databases/silva/silva_release_138_1-bac-16s-id90.fasta";
+my $ref16RNAdb_2 = "/usr/local/databases/silva/silva_release_138_1-arc-16s-id95.fasta";
+my $ref18db = "/usr/local/databases/silva/silva_release_138_1-euk-18s-id95.fasta";
+my $silva_db_arb = "/usr/local/databases/silva/SILVA_138.1_SSURef_NR99_12_06_20_opt.arb";
 
 my $pathout = $ARGV[16]; #the path where the processed analysis files will be stored
 my $AnalysisReadMe = "$bin_dir/Analysis-readme.pdf";
