@@ -6,6 +6,8 @@ import logging
 import os
 import subprocess
 
+import math
+import statistics
 import pandas as pd
 
 
@@ -27,6 +29,7 @@ spikes_stats_path = args.spikes_stats_path
 
 
 samples = {}
+observed_weights = []
 with open(spikes_stats_path, 'r') as stats_h:
     for line in stats_h:
         if line.startswith("#"):
@@ -40,8 +43,10 @@ with open(spikes_stats_path, 'r') as stats_h:
             try:
                 original_total_weight_in_g = float(fields[2])
             except ValueError:
-                original_total_weight_in_g = 0
+                original_total_weight_in_g = float("nan")
             amount = float(fields[3])
+            if not math.isnan(original_total_weight_in_g):
+                observed_weights.append(original_total_weight_in_g)
             samples[sample_id] = (spike_reads, original_total_weight_in_g, amount)
 
 
@@ -70,6 +75,11 @@ for file_id, values in samples.items():
             otu_table[file_id] = otu_table[file_id] * (10000 / row_sum)
         else:
             # do spike normalization
+            if math.isnan(weight):
+                if len(observed_weights) == 0:
+                    weight = 1  # fallback to 1
+                else:
+                    weight = statistics.median(observed_weights)  # fallback to median weight
             factor = 600 / (amount * 100)
             otu_table[file_id] = (otu_table[file_id] * thismean) / (count * weight * factor)
     except KeyError:

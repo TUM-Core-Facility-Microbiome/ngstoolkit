@@ -186,9 +186,9 @@ with open(mapping_file, 'r') as mapping_file_h:
             float(total_weight_in_g)
         except ValueError as e:
             print(
-                f'Weight {total_weight_in_g!r} is not a valid floating point number for {sample_id!r}. Sample will be processed as no spikes',
+                f'Weight {total_weight_in_g!r} is not a valid floating point number for {sample_id!r}. Weigth will be processed as NAN.',
                 file=sys.stderr)
-            fields[index_of_amounts_col] = "0"
+            fields[index_of_weight_col] = "NAN"
 
         # if amount cannot be parsed to float change to 0
         try:
