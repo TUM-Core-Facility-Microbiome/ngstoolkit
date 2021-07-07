@@ -713,13 +713,13 @@ if ($reference_sequence ne "16S" && $reference_sequence ne "18S") {
     unless (-e $arb_file) {  # if arb file does not exist
         # build arb file from own reference file
         logToStatusFile("Index reference file to arb file...");
-        system $bin_dir . "/sina -i $reference_sequence --prealigned -o $arb_file 2>&1";
+        system $bin_dir . "/sina -i $reference_sequence --prealigned -o $arb_file";
     }
 } else {
     # use default silva reference arb file
     $arb_file = $silva_db_arb;
 }
-system $bin_dir . "/sina --in $pathout/$nonchimeric_otus_03_filtered_filename --out $pathout/$nonchimeric_otus_03_aligned_filename --db $arb_file --search --intype=fasta --outtype=fasta --fasta-write-dna --lca-fields=tax_slv, --meta-fmt csv >/dev/null 2>&1";
+system $bin_dir . "/sina --in $pathout/$nonchimeric_otus_03_filtered_filename --out $pathout/$nonchimeric_otus_03_aligned_filename --db $arb_file --search --intype=fasta --outtype=fasta --fasta-write-dna --lca-fields=tax_slv, --meta-fmt csv";
 addTax("$pathout/$otu_table_03_filtered", "$pathout/$otus_03_nonchimeric_aligned", "$pathout/$otu_table_03_final");
 print "Done.\n\n";
 
