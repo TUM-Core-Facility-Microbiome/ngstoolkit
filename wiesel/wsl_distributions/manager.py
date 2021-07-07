@@ -11,6 +11,7 @@ from typing.io import IO
 
 from wiesel import utils, errors, WSL_EXE
 from wiesel.utils import stream
+from wiesel import prerequisites
 
 
 class Distro(object):
@@ -87,6 +88,8 @@ class RegisteredDistribution(Distro):
 
 class WSLManager(object):
     def __init__(self):
+        prerequisites.check_compatible()
+
         self._machines = {}
         self._default_distro = None
 
@@ -184,6 +187,8 @@ class DistributionTarFile(DistributionDefinition):
         return wsl_manager.get_distro(self.distribution_name)
 
     def build(self, force=False) -> Optional[RegisteredDistribution]:
+        prerequisites.check_compatible()
+
         try:
             registered_distro = self._build()
             return registered_distro
