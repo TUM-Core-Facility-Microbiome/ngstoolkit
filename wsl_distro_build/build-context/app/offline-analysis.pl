@@ -454,7 +454,7 @@ my $filtered_otu_table_03_list = "filtered_otu_table_list.txt";
 
 my $otus_03_filename = "study-otus-03.fasta";
 my $filterGoodFolderName = "good-OTUs";
-my $good_seqs = "$filterGoodFolderName.fasta";
+my $good_seqs = "$filterGoodFolderName.fa";
 my $nonchimeric_otus_03_filename = "otus-03-nonchimeric.fasta";
 my $nonchimeric_otus_03_filtered_filename = "OTUs-Seqs.fasta";
 my $nonchimeric_otus_03_aligned_filename = "otus-03-nonchimeric-aligned.fasta";
@@ -473,7 +473,7 @@ if ($doZ == 1) {
 
     $otus_03_filename = "study-zotus-03.fasta";
     $filterGoodFolderName = "good-zOTUs";
-    $good_seqs = "$filterGoodFolderName.fasta";
+    $good_seqs = "$filterGoodFolderName.fa";
     $nonchimeric_otus_03_filename = "zotus-03-nonchimeric.fasta";
     $nonchimeric_otus_03_filtered_filename = "zOTUs-Seqs.fasta";
     $nonchimeric_otus_03_aligned_filename = "zotus-03-nonchimeric-aligned.fasta";
