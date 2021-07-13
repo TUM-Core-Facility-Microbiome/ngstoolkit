@@ -17,6 +17,6 @@ jobs:
     - name: Docker version
       run: docker --version
     - name: Pipeline version
-      run: python3 -m ngspipeline --version
+      run: python3 -m ngspipeline.cli --version
     - name: Build and export ngstoolkitdist
-      run: python3 -m ngspipeline --export
+      run: python3 -m ngspipeline.cli --export
