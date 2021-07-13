@@ -83,25 +83,7 @@ RUN  curl -L https://github.com/biocore/sortmerna/releases/download/v${sortmerna
 
 
 ##############################################
-# GETTING USEARCH ############################
-##############################################
-WORKDIR /usr/local/bin
-
-ARG usearch_version="11.0.667"
-
-# If you have a 64 bit version put the executable in the app folder; 32 bit executable will be not downloaded then
-# As docker requires at least one file to be copied, we also copy the dockerfile which must always exist
-COPY Dockerfile opt/usearch${usearch_version}_i86linux64* ./
-RUN  rm ./Dockerfile
-
-RUN  if [ -f usearch${usearch_version}_i86linux64 ]; then mv usearch${usearch_version}_i86linux64 usearch; exit 0; fi \
-  && curl -L https://www.drive5.com/downloads/usearch${usearch_version}_i86linux32.gz -o usearch.gz \
-  && if [ $(md5sum ./usearch.gz) != "27cc6b779b899daa5d17a95fd0eeb69c ./usearch.gz" ]; then echo "usearch32 hash mismatch"; exit 1; fi \
-  && gunzip usearch.gz
-
-
-##############################################
-# DATABASES ##################################
+# DATABASE DOWNLOADS #########################
 ##############################################
 WORKDIR /usr/local/databases
 
@@ -120,6 +102,35 @@ RUN  curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}
 ARG silva_arb_file="SILVA_138.1_SSURef_NR99_12_06_20_opt.arb.gz"
 RUN  curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/ARB_files/${silva_arb_file} -O \
   && gunzip *.gz
+
+
+##############################################
+# GETTING USEARCH ############################
+##############################################
+WORKDIR /usr/local/bin
+
+ARG usearch_version="11.0.667"
+
+# If you have a 64 bit version put the executable in the app folder; 32 bit executable will be not downloaded then
+# As docker requires at least one file to be copied, we also copy the dockerfile which must always exist
+COPY Dockerfile opt/usearch${usearch_version}_i86linux64* ./
+RUN  rm ./Dockerfile
+
+RUN  if [ -f usearch${usearch_version}_i86linux64 ]; then mv usearch${usearch_version}_i86linux64 usearch; exit 0; fi \
+  && curl -L https://www.drive5.com/downloads/usearch${usearch_version}_i86linux32.gz -o usearch.gz \
+  && if [ $(md5sum ./usearch.gz) != "27cc6b779b899daa5d17a95fd0eeb69c ./usearch.gz" ]; then echo "usearch32 hash mismatch"; exit 1; fi \
+  && gunzip usearch.gz
+
+
+##############################################
+# DATABASE INDICES ###########################
+##############################################
+WORKDIR /usr/local/bin
+COPY app/generate_databases.sh .
+RUN  chmod -R +x /usr/local/bin
+
+
+WORKDIR /usr/local/databases
 
 # udb database
 WORKDIR /usr/local/databases/silva/idx
