@@ -1,0 +1,2 @@
+class WrongFileType(Exception):
+    pass
