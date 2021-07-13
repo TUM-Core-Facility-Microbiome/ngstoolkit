@@ -103,6 +103,11 @@ RUN  if [ -f usearch${usearch_version}_i86linux64 ]; then mv usearch${usearch_ve
 ##############################################
 # DATABASES ##################################
 ##############################################
+WORKDIR /usr/local/bin
+COPY app/generate_databases.sh .
+RUN  chmod -R +x /usr/local/bin
+
+
 WORKDIR /usr/local/databases
 
 ### silva
