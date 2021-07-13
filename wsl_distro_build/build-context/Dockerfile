@@ -56,20 +56,6 @@ RUN  curl -L http://www.microbesonline.org/fasttree/FastTree -o FastTree_${fastt
 
 
 ##############################################
-# GETTING BOWTIE2 ############################
-##############################################
-WORKDIR /usr/local/bin
-
-ARG bowtie2_version="2.4.4"
-RUN  curl -L https://downloads.sourceforge.net/project/bowtie-bio/bowtie2/${bowtie2_version}/bowtie2-${bowtie2_version}-linux-x86_64.zip -o bowtie2.zip \
-  && if [ $(md5sum ./bowtie2.zip) != "6b73a78053ce4f30d53bf95c7358d03e ./bowtie2.zip" ]; then echo "bowtie2 hash mismatch"; exit 1; fi \
-  && unzip bowtie2.zip \
-  && ln -s bowtie2-*-linux-x86_64/bowtie2 bowtie2 \
-  && ln -s bowtie2-*-linux-x86_64/bowtie2-build bowtie2-build \
-  && rm -rf bowtie2.zip
-
-
-##############################################
 # GETTING SORTMERNA ##########################
 ##############################################
 WORKDIR /usr/local/bin
@@ -102,6 +88,20 @@ RUN  curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}
 ARG silva_arb_file="SILVA_138.1_SSURef_NR99_12_06_20_opt.arb.gz"
 RUN  curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/ARB_files/${silva_arb_file} -O \
   && gunzip *.gz
+
+
+##############################################
+# GETTING BOWTIE2 ############################
+##############################################
+WORKDIR /usr/local/bin
+
+ARG bowtie2_version="2.4.4"
+RUN  curl -L https://downloads.sourceforge.net/project/bowtie-bio/bowtie2/${bowtie2_version}/bowtie2-${bowtie2_version}-linux-x86_64.zip -o bowtie2.zip \
+  && if [ $(md5sum ./bowtie2.zip) != "6b73a78053ce4f30d53bf95c7358d03e ./bowtie2.zip" ]; then echo "bowtie2 hash mismatch"; exit 1; fi \
+  && unzip bowtie2.zip \
+  && ln -s bowtie2-*-linux-x86_64/bowtie2 bowtie2 \
+  && ln -s bowtie2-*-linux-x86_64/bowtie2-build bowtie2-build \
+  && rm -rf bowtie2.zip
 
 
 ##############################################
