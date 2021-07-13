@@ -151,4 +151,7 @@ def stream_output(generator: Iterator[bytes]):
 
 def log_output(generator: Iterator[bytes], loglevel=logging.DEBUG):
     for line in decoded_stream(generator):
-        logging.log(loglevel, line)
+        try:
+            logging.log(loglevel, line)
+        except UnicodeEncodeError:
+            pass
