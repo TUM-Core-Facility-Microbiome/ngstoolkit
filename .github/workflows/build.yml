@@ -1,0 +1,22 @@
+name: Build WSL2 Distribution of ngstoolkitdist
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Docker version
+      run: docker --version
+    - name: Pipeline version
+      run: python3 -m ngspipeline --version
+    - name: Build and export ngstoolkitdist
+      run: python3 -m ngspipeline --export
