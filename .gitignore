@@ -1,3 +1,8 @@
+wsl_distro_build/build-context/opt/
+ngstoolkitdist.tar
+ext4.vhdx
+
+
 ### Pycharm gitignore
 .idea/
 
