@@ -11,5 +11,11 @@ if not os.path.exists(tar_path):
                          f"and run the register script again.")
 else:
     messagebox.showinfo('Starting...', 'Please click OK to start. This may take a while...')
-    ngspipeline.cli.import_from_tar(tar_path)
-    messagebox.showinfo('Finished', 'Registration of WSL distribution finished.')
+    try:
+        ngspipeline.cli.import_from_tar(tar_path)
+        messagebox.showinfo('Finished', 'Registration of WSL distribution finished.')
+    except:
+        messagebox.showerror("Registration failed",
+                             "Error in WSL distribution registration. "
+                             "Make sure your WSL installation is version 2 compatible and you have followed the "
+                             "installation instructions.")
