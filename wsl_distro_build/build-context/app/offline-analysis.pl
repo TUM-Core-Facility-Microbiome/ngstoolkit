@@ -1086,7 +1086,7 @@ sub addTax {
 
     my $firstline = <$otu_fh>;
     chomp $firstline;
-    $firstline = "#$firstline\ttaxonomy\n";
+    $firstline = "$firstline\ttaxonomy\n";
     print $combined_fh $firstline;
 
     while (my $otuline = <$otu_fh>) {
