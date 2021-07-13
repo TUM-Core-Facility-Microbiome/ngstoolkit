@@ -924,7 +924,7 @@ def logrotate():
         os.rename(debug_file, debug_old_file)
 
 
-if __name__ == '__main__':
+def run():
     # log file rotation
     # keep last 2 log files
     # rename existing log file to debug_old.log
@@ -940,3 +940,7 @@ if __name__ == '__main__':
     )
 
     main()
+
+
+if __name__ == '__main__':
+    run()
