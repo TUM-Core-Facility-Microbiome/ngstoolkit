@@ -144,7 +144,7 @@ COPY Dockerfile opt/silva_${silva_release}-arc-16s-id95.fasta* opt/silva_${silva
 RUN  rm Dockerfile
 
 # maximum cpu to use in database generation
-ARG max_cpu=48
+ARG max_cpu=32
 RUN  if [ -f silva_${silva_release}-arc-16s-id95.fasta ] && [ -f silva_${silva_release}-euk-18s-id95.fasta ] && [ -f silva_${silva_release}-bac-16s-id90.fasta ]; then echo "Databases exist"; exit 0; fi \
   && generate_databases.sh ../${silva_ssu_nr99_filename}.fasta ${silva_release} SSU ${max_cpu}
 
