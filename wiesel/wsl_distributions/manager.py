@@ -226,10 +226,11 @@ class Dockerfile(DistributionDefinition):
         self._temp_file_path = self.get_temp_file_path()
         self._build_args = build_args
 
-    def build_tar_file(self, tar_file_path: Optional[str] = None) -> str:
+    def build_tar_file(self, tar_file_path: Optional[str] = None, remove_image: bool = False) -> str:
         """
         Create a TAR file that can be imported by WSL.
         :param tar_file_path: TAR file path to write. If None is given, a temporary file is created.
+        :param remove_image: Remove the docker image after export.
         :return: Absolute path of the created TAR file.
         """
 
@@ -290,6 +291,17 @@ class Dockerfile(DistributionDefinition):
         p.start()
         stream(p, prefix="DOCKER RM")
         p.check_success()
+
+        # cleanup
+        if remove_image:
+            cmd = [DOCKER_EXE, "rmi",
+                   docker_image_name, "-f"]
+            print(' '.join(cmd))
+
+            p = utils.Process(cmd, encoding='utf-8')
+            p.start()
+            stream(p, prefix="DOCKER RMI")
+            p.check_success()
 
         return os.path.abspath(tar_file_path)
 
