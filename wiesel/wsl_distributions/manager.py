@@ -291,16 +291,6 @@ class Dockerfile(DistributionDefinition):
         stream(p, prefix="DOCKER RM")
         p.check_success()
 
-        # cleanup
-        cmd = [DOCKER_EXE, "rmi",
-               docker_image_name, "-f"]
-        print(' '.join(cmd))
-
-        p = utils.Process(cmd, encoding='utf-8')
-        p.start()
-        stream(p, prefix="DOCKER RMI")
-        p.check_success()
-
         return os.path.abspath(tar_file_path)
 
     def build(self, force=False) -> Optional[RegisteredDistribution]:
