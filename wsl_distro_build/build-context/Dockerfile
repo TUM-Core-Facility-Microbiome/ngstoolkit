@@ -56,6 +56,41 @@ RUN  curl -L http://www.microbesonline.org/fasttree/FastTree -o FastTree_${fastt
 
 
 ##############################################
+# GETTING SORTMERNA ##########################
+##############################################
+WORKDIR /usr/local/bin
+
+ARG sortmerna_version="4.3.3"
+RUN  curl -L https://github.com/biocore/sortmerna/releases/download/v${sortmerna_version}/sortmerna-${sortmerna_version}-Linux.tar.gz -o sortmerna.tar.gz \
+  && if [ $(md5sum ./sortmerna.tar.gz) != "85b659dc000718e0b3c0de842dd1bb6c ./sortmerna_source_code.tar.gz" ]; then echo "sortmerna hash mismatch"; exit 1; fi \
+  && tar -zxvf ./sortmerna.tar.gz \
+  && ln -s sortmerna-${sortmerna_version}-*/bin/sortmerna sortmerna \
+  && rm -rf ./sortmerna.tar.gz
+
+
+##############################################
+# DATABASE DOWNLOADS #########################
+##############################################
+WORKDIR /usr/local/databases
+
+### silva
+WORKDIR /usr/local/databases/silva
+
+ARG silva_release="release_138_1"
+# file without file extension (.fasta.gz)
+ARG silva_ssu_nr99_filename="SILVA_138.1_SSURef_NR99_tax_silva"
+
+# fasta
+RUN  curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/Exports/${silva_ssu_nr99_filename}.fasta.gz -O \
+  && gunzip *.gz
+
+# arb
+ARG silva_arb_file="SILVA_138.1_SSURef_NR99_12_06_20_opt.arb.gz"
+RUN  curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/ARB_files/${silva_arb_file} -O \
+  && gunzip *.gz
+
+
+##############################################
 # GETTING BOWTIE2 ############################
 ##############################################
 WORKDIR /usr/local/bin
@@ -67,19 +102,6 @@ RUN  curl -L https://downloads.sourceforge.net/project/bowtie-bio/bowtie2/${bowt
   && ln -s bowtie2-*-linux-x86_64/bowtie2 bowtie2 \
   && ln -s bowtie2-*-linux-x86_64/bowtie2-build bowtie2-build \
   && rm -rf bowtie2.zip
-
-
-##############################################
-# GETTING SORTMERNA ##########################
-##############################################
-WORKDIR /usr/local/bin
-
-ARG sortmerna_version="4.3.3"
-RUN  curl -L https://github.com/biocore/sortmerna/releases/download/v${sortmerna_version}/sortmerna-${sortmerna_version}-Linux.tar.gz -o sortmerna.tar.gz \
-  && if [ $(md5sum ./sortmerna.tar.gz) != "85b659dc000718e0b3c0de842dd1bb6c ./sortmerna_source_code.tar.gz" ]; then echo "sortmerna hash mismatch"; exit 1; fi \
-  && tar -zxvf ./sortmerna.tar.gz \
-  && ln -s sortmerna-${sortmerna_version}-*/bin/sortmerna sortmerna \
-  && rm -rf ./sortmerna.tar.gz
 
 
 ##############################################
@@ -101,7 +123,7 @@ RUN  if [ -f usearch${usearch_version}_i86linux64 ]; then mv usearch${usearch_ve
 
 
 ##############################################
-# DATABASES ##################################
+# DATABASE INDICES ###########################
 ##############################################
 WORKDIR /usr/local/bin
 COPY app/generate_databases.sh .
@@ -109,22 +131,6 @@ RUN  chmod -R +x /usr/local/bin
 
 
 WORKDIR /usr/local/databases
-
-### silva
-WORKDIR /usr/local/databases/silva
-
-ARG silva_release="release_138_1"
-# file without file extension (.fasta.gz)
-ARG silva_ssu_nr99_filename="SILVA_138.1_SSURef_NR99_tax_silva"
-
-# fasta
-RUN  curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/Exports/${silva_ssu_nr99_filename}.fasta.gz -O \
-  && gunzip *.gz
-
-# arb
-ARG silva_arb_file="SILVA_138.1_SSURef_NR99_12_06_20_opt.arb.gz"
-RUN  curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/ARB_files/${silva_arb_file} -O \
-  && gunzip *.gz
 
 # udb database
 WORKDIR /usr/local/databases/silva/idx
