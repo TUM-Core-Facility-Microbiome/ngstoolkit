@@ -1,4 +1,4 @@
-name: Build WSL2 Distribution of ngstoolkitdist
+name: Build and attach ngstoolkitdist.tar
 
 on:
   push:
@@ -20,3 +20,8 @@ jobs:
       run: python3 -m ngspipeline.cli --version
     - name: Build and export ngstoolkitdist
       run: python3 -m ngspipeline.cli --export
+    - name: Archive distribution artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ngstoolkitdist.tar
+        path: ngstoolkitdist.tar
