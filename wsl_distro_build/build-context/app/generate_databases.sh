@@ -11,10 +11,10 @@ max_cpu=$4  # max cpu to use in sumaclust
 target_domains=( "Archaea" "Eukaryota" "Bacteria" )
 source="silva_${silva_release}"
 if [ "${subunit}" = "SSU" ]; then
-  filenames=( "${source}-bac-16s" "${source}-euk-18s" "${source}-arc-16s" )
-  ident=( 0.90 0.95 0.95 )
+  filenames=( "${source}-arc-16s" "${source}-euk-18s" "${source}-bac-16s" )
+  ident=( 0.95 0.95 0.90 )
 elif [ "${subunit}" = "LSU" ]; then
-  filenames=( "${source}-bac-23s" "${source}-euk-28s" "${source}-arc-23s" )
+  filenames=( "${source}-arc-23s" "${source}-euk-28s" "${source}-bac-23s" )
   ident=( 0.98 0.98 0.98 )
 else
   >&2 echo -e "Unknown value for subunit. Can be SSU or LSU"
