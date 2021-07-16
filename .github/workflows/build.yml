@@ -2,8 +2,6 @@ name: Create release and attach ngstoolkitdist.tar
 
 on:
   push:
-    branches:
-      - main
     tags:
       - 'v*'
 
