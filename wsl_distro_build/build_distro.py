@@ -28,7 +28,7 @@ def build_ngstoolkit_wsl_distro(distro_name: str, ngstoolkit_version: str):
         print(f"Successfully registered a WSL distribution named {distro.name!r}.")
 
 
-def export(distro_name: str, ngstoolkit_version: str):
+def export(distro_name: str, ngstoolkit_version: str, remove_image: bool = False):
     distro_from_dockerfile = Dockerfile(
         dockerfile_path=os.path.join(pathlib.Path(__file__).parent.absolute(), "build-context", "Dockerfile"),
         docker_context_path=os.path.join(pathlib.Path(__file__).parent.absolute(), "build-context"),
@@ -38,7 +38,7 @@ def export(distro_name: str, ngstoolkit_version: str):
         build_args={'ngstoolkit_version': ngstoolkit_version}
     )
 
-    distro_from_dockerfile.build_tar_file(f"{distro_name}.tar")
+    distro_from_dockerfile.build_tar_file(f"{distro_name}.tar", remove_image)
 
 
 def import_from_tar(distro_name: str, tar_file_path: str):

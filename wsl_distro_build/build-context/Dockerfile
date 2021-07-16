@@ -32,6 +32,28 @@ RUN  mkdir ./src
 
 
 ##############################################
+# DATABASE DOWNLOADS #########################
+##############################################
+WORKDIR /usr/local/databases
+
+### silva
+WORKDIR /usr/local/databases/silva
+
+ARG silva_release="release_138_1"
+# file without file extension (.fasta.gz)
+ARG silva_ssu_nr99_filename="SILVA_138.1_SSURef_NR99_tax_silva"
+
+# fasta
+RUN  curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/Exports/${silva_ssu_nr99_filename}.fasta.gz -O \
+  && gunzip *.gz
+
+# arb
+ARG silva_arb_file="SILVA_138.1_SSURef_NR99_12_06_20_opt.arb.gz"
+RUN  curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/ARB_files/${silva_arb_file} -O \
+  && gunzip *.gz
+
+
+##############################################
 # GETTING SINA ###############################
 ##############################################
 WORKDIR /usr/local/bin
@@ -66,28 +88,6 @@ RUN  curl -L https://github.com/biocore/sortmerna/releases/download/v${sortmerna
   && tar -zxvf ./sortmerna.tar.gz \
   && ln -s sortmerna-${sortmerna_version}-*/bin/sortmerna sortmerna \
   && rm -rf ./sortmerna.tar.gz
-
-
-##############################################
-# DATABASE DOWNLOADS #########################
-##############################################
-WORKDIR /usr/local/databases
-
-### silva
-WORKDIR /usr/local/databases/silva
-
-ARG silva_release="release_138_1"
-# file without file extension (.fasta.gz)
-ARG silva_ssu_nr99_filename="SILVA_138.1_SSURef_NR99_tax_silva"
-
-# fasta
-RUN  curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/Exports/${silva_ssu_nr99_filename}.fasta.gz -O \
-  && gunzip *.gz
-
-# arb
-ARG silva_arb_file="SILVA_138.1_SSURef_NR99_12_06_20_opt.arb.gz"
-RUN  curl -L https://www.arb-silva.de/fileadmin/silva_databases/${silva_release}/ARB_files/${silva_arb_file} -O \
-  && gunzip *.gz
 
 
 ##############################################
