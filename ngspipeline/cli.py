@@ -20,7 +20,7 @@ def import_from_tar(tar: str):
 
 
 def export_tar():
-    wsl_distro_build.export(DISTRO_NAME, __version__)
+    wsl_distro_build.export(DISTRO_NAME, __version__, remove_image=False)
 
 
 if __name__ == '__main__':
