@@ -20,6 +20,8 @@ jobs:
       run: python3 -m ngspipeline.cli --version
     - name: Build and export ngstoolkitdist
       run: python3 -m ngspipeline.cli --export
+    - name: Cleanup pycache
+      run: find -type d -name "__pycache__" | xargs rm -r
     - name: Create archive
       run: zip -9 -r release.zip *
     - name: Create release
