@@ -1,4 +1,45 @@
-# ngspipeline
+# NGS Toolkit
+
+## Download 
+Full Download - Please download the zip file of the latest release (on the right side under 'Release') 
+Partial Download - Download the zip file under 'Code' (this does not include the wsl distribution file) 
+Partial Download is only recommended if the wsl distribution file ('ngstoolkitdist.tar') is already downloaded. Download of this version is much faster. 
+
+## Installation
+Full Download
+1. Extract the zip file
+2. Execute the installation script - register_distribution.py
+3. Open the GUI (gui.py)
+
+Partial Download
+1. Extract the zip file
+2. Copy the wsl distribution file  ('ngstoolkitdist.tar') to the directory 
+3. Execute the installation script - register_distribution.py
+4. Open the GUI (gui.py)
+
+## Usage 
+The input files for the Tool are FASTQ files (zipped files are accespted). Additionally to the FASTQ file a mapping file can be provided (not mandatory).
+The mapping file needs to be in a certain format
+
+### Mapping File
+Tab seperated text file 
+First column = #SampleID
+Please avoid to use special characters (no spaces in header names are allowed)
+
+### Spike removal
+If your data set include spike controls a mapping file is mandatory 
+
+### Mapping File for Spike Removal
+Tab seperated text file 
+First column = #SampleID
+Mandatory column = total_weight_in_g
+Mandatory column = total_amount
+If the stool weight is unknwon please write NA
+If the amount of added spike is unknown please write NA
+Please avoid to use special characters (no spaces in header names are allowed)
+
+## HELP
+For installation and useability a README file is provided and can be found in the downloaded folder. 
 
 ## Execute
 ### Get program version
