@@ -1,8 +1,8 @@
 # NGS Toolkit
 
 ## Download 
-Full Download - Please download the zip file of the latest release (on the right side under 'Release') 
-Partial Download - Download the zip file under 'Code' (this does not include the wsl distribution file) 
+Full Download - Please download the zip file of the latest release (on the right side under 'Release')  <br>
+Partial Download - Download the zip file under 'Code' (this does not include the wsl distribution file)  <br> <br>
 Partial Download is only recommended if the wsl distribution file ('ngstoolkitdist.tar') is already downloaded. Download of this version is much faster. 
 
 ## Installation
@@ -22,20 +22,20 @@ The input files for the Tool are FASTQ files (zipped files are accespted). Addit
 The mapping file needs to be in a certain format
 
 ### Mapping File
-Tab seperated text file 
-First column = #SampleID
+Tab seperated text file  <br>
+First column = #SampleID <br>
 Please avoid to use special characters (no spaces in header names are allowed)
 
 ### Spike removal
 If your data set include spike controls a mapping file is mandatory 
 
 ### Mapping File for Spike Removal
-Tab seperated text file 
-First column = #SampleID
-Mandatory column = total_weight_in_g
-Mandatory column = total_amount
-If the stool weight is unknwon please write NA
-If the amount of added spike is unknown please write NA
+Tab seperated text file  <br>
+First column = #SampleID <br>
+Mandatory column = total_weight_in_g <br>
+Mandatory column = total_amount <br>
+If the stool weight is unknwon please write NA <br>
+If the amount of added spike is unknown please write NA <br>
 Please avoid to use special characters (no spaces in header names are allowed)
 
 ## HELP
