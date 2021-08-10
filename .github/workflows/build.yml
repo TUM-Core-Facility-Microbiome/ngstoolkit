@@ -25,7 +25,7 @@ jobs:
     - name: Cleanup pycache
       run: find -type d -name "__pycache__" | xargs rm -r
     - name: Create archive
-      run: git archive --format=zip -o release.zip -9 HEAD
+      run: git archive --format=zip --add-file=ngstoolkitdist.tar -o release.zip -9 HEAD
     - name: Create release
       uses: softprops/action-gh-release@v1
       with:
