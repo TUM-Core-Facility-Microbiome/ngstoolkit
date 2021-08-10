@@ -18,7 +18,7 @@ Partial Download
 4. Open the GUI (gui.py)
 
 ## Usage 
-The input files for the Tool are FASTQ files (zipped files are accespted). Additionally to the FASTQ file a mapping file can be provided (not mandatory).
+The input files for the Tool are FASTQ files (zipped files are accepted). Additionally to the FASTQ file a mapping file can be provided (not mandatory).
 The mapping file needs to be in a certain format
 
 ### Mapping File
