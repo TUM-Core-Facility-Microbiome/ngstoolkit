@@ -21,11 +21,11 @@ Partial Download
 4. Open the GUI (gui.py)
 
 ## Usage 
-The input files for the Tool are FASTQ files (zipped files are accepted). Additionally to the FASTQ file a mapping file can be provided (not mandatory).
+The input files for the Tool are FASTQ files (zipped files are accepted). Additionally, to the FASTQ file a mapping file can be provided (not mandatory).
 The mapping file needs to be in a certain format
 
 ### Mapping File
-Tab seperated text file  <br>
+Tab separated text file  <br>
 First column = #SampleID <br>
 Please avoid to use special characters (no spaces in header names are allowed)
 
@@ -37,12 +37,12 @@ Tab seperated text file  <br>
 First column = #SampleID <br>
 Mandatory column = total_weight_in_g <br>
 Mandatory column = total_amount <br>
-If the stool weight is unknwon please write NA <br>
+If the stool weight is unknown please write NA <br>
 If the amount of added spike is unknown please write NA <br>
 Please avoid to use special characters (no spaces in header names are allowed)
 
 ## HELP
-For installation and useability a README file is provided and can be found in the downloaded folder. 
+For installation and usability a README file is provided and can be found in the downloaded folder.
 
 ## Citation
 This software is registered at zenodo. Note that zenodo assigns multiple DOIs. 
