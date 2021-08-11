@@ -1,5 +1,8 @@
 # NGS Toolkit
 
+[![GitHub release](https://img.shields.io/github/v/release/TUM-Core-Facility-Microbiome/ngstoolkit)](https://github.com/TUM-Core-Facility-Microbiome/ngstoolkit/releases/latest)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5163363.svg)](https://doi.org/10.5281/zenodo.5163363)
+
 ## Download 
 Full Download - Please download the zip file of the latest release (on the right side under 'Release')  <br>
 Partial Download - Download the zip file under 'Code' (this does not include the wsl distribution file)  <br> <br>
@@ -40,6 +43,13 @@ Please avoid to use special characters (no spaces in header names are allowed)
 
 ## HELP
 For installation and useability a README file is provided and can be found in the downloaded folder. 
+
+## Citation
+This software is registered at zenodo. Note that zenodo assigns multiple DOIs. 
+[`10.5281/zenodo.5163363`](https://doi.org/10.5281/zenodo.5163363) represents all versions and will always resolve to 
+the latest release.
+
+Additionally, zenodo assigns a DOI per release. Go to [zenodo](https://doi.org/10.5281/zenodo.5163363) to obtain this release-specific DOI.
 
 ## Execute
 ### Get program version
