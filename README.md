@@ -6,7 +6,7 @@
 ## Download 
 Full Download - Please download the zip file of the latest release (on the right side under 'Release')  <br>
 Partial Download - Download the zip file under 'Code' (this does not include the wsl distribution file)  <br> <br>
-Partial Download is only recommended if the wsl distribution file ('ngstoolkitdist.tar') is already downloaded. Download of this version is much faster. 
+Partial Download is only recommended if the wsl distribution file (`ngstoolkitdist.tar`) is already downloaded. Download of this version is much faster.
 
 ## Installation
 Full Download
