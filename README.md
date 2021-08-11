@@ -16,7 +16,7 @@ Full Download
 
 Partial Download
 1. Extract the zip file
-2. Copy the wsl distribution file  ('ngstoolkitdist.tar') to the directory 
+2. Copy the wsl distribution file  (`ngstoolkitdist.tar`) to the directory
 3. Execute the installation script - register_distribution.py
 4. Open the GUI (gui.py)
 
