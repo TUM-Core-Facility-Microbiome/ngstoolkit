@@ -111,7 +111,7 @@ WORKDIR /usr/local/bin
 
 ARG usearch_version="11.0.667"
 
-# If you have a 64 bit version put the executable in the app folder; 32 bit executable will be not downloaded then
+# If you have a 64 bit version put the executable in the opt folder; 32 bit executable will be not downloaded then
 # As docker requires at least one file to be copied, we also copy the dockerfile which must always exist
 COPY Dockerfile opt/usearch${usearch_version}_i86linux64* ./
 RUN  rm ./Dockerfile
