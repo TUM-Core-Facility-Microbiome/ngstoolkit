@@ -4,7 +4,7 @@ import re
 import subprocess
 import sys
 from abc import abstractmethod
-from typing import List, Iterator
+from typing import List, Iterator, Optional, Dict
 
 
 class DriverException(Exception):
@@ -132,6 +132,43 @@ class WSLDriver(Driver):
         if not self.shellDriver.process:
             return None
         return self.shellDriver.process.returncode
+
+
+class VolumeMountMap:
+    def __init__(self):
+        self.mappings = {}
+
+    def add(self, path, path_inside_docker):
+        self.mappings[path] = path_inside_docker
+
+    def to_mounts(self):
+        mounts = []
+        for source, target in self.mappings.items():
+            mounts.append(f"--volume {source}:{target}")
+        return ' '.join(mounts)
+
+    def inner_path(self, full_path: str):
+        for source, target in self.mappings.items():
+            if full_path.startswith(source):
+                return full_path.replace(source, target)
+
+
+class DockerDriver(Driver):
+    def __init__(self, image_name='ngstoolkitdist:latest', docker_executable='docker',
+                 volume_mount_map: VolumeMountMap = VolumeMountMap()):
+        super().__init__()
+        self.image_name = image_name
+        self.docker_executable = docker_executable
+        self.volume_mount_map = volume_mount_map
+        self.cmd_prefix = f'{self.docker_executable} run --rm {self.volume_mount_map.to_mounts()} {self.image_name}'
+        self.shellDriver = LinuxShellDriver()
+        self.shellDriver.self_check()
+        logging.debug(f'using driver {self.__class__.__name__!r}')
+
+    def run_cmd(self, cmd: str) -> Iterator[bytes]:
+        prefixed_cmd = f'{self.cmd_prefix} {cmd}'
+        logging.debug(f"Running {prefixed_cmd}")
+        return self.shellDriver.run_cmd(prefixed_cmd)
 
 
 def _decode_output(byte_string: bytes) -> str:
