@@ -16,9 +16,9 @@ jobs:
       REPO: "biocore/sortmerna"
     steps:
     - name: Get sortmeRNA version from Dockerfile
-      run: echo "USED_VERSION=$(grep "sortmerna_version=" ${{DOCKERFILE}} | cut -f2 -d'"')" >> $GITHUB_ENV
+      run: echo "USED_VERSION=$(grep "sortmerna_version=" $DOCKERFILE | cut -f2 -d'"')" >> $GITHUB_ENV
     - name: Get current version from github
-      run: echo "LATEST_VERSION=$(curl --silent "https://api.github.com/repos/${{REPO}}/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')" >> $GITHUB_ENV
+      run: echo "LATEST_VERSION=$(curl --silent "https://api.github.com/repos/$REPO/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')" >> $GITHUB_ENV
     - name: Check updated
       run: |
         if [[ "v${{USED_VERSION}}" == "${{LATEST_VERSION}}" ]]; then
@@ -30,7 +30,7 @@ jobs:
       if: env.UPDATE_AVAILABLE == 'true'
       name: Create issue when new version is available
       with:
-        title: Update sortmeRNA to release version ${{CURRENT_VERSION}}
+        title: Update sortmeRNA to release version $CURRENT_VERSION
         token: ${{secrets.GITHUB_TOKEN}}
         labels: dependency-update
-        body: A new release of ${{REPO}} was found. Dockerfile uses version v${{USED_VERSION}} but latest available version is ${{LATEST_VERSION}}.
+        body: A new release of $REPO was found. Dockerfile uses version v$USED_VERSION but latest available version is $LATEST_VERSION.
