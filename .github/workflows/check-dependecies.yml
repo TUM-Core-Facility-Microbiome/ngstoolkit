@@ -19,8 +19,15 @@ jobs:
       run: echo "USED_VERSION=$(grep "sortmerna_version=" ${{DOCKERFILE}} | cut -f2 -d'"')" >> $GITHUB_ENV
     - name: Get current version from github
       run: echo "LATEST_VERSION=$(curl --silent "https://api.github.com/repos/${{REPO}}/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')" >> $GITHUB_ENV
+    - name: Check updated
+      run: |
+        if [[ "v${{USED_VERSION}}" == "${{LATEST_VERSION}}" ]]; then
+            echo "UPDATE_AVAILABLE=true" >> "$GITHUB_ENV"
+        else
+            echo "UPDATE_AVAILABLE=false" >> "$GITHUB_ENV"
+        fi
     - uses: nashmaniac/create-issue-action@v1.1
-      if: ${{ v${{USED_VERSION}} == ${{LATEST_VERSION}} }}
+      if: env.UPDATE_AVAILABLE == 'true'
       name: Create issue when new version is available
       with:
         title: Update sortmeRNA to release version ${{CURRENT_VERSION}}
