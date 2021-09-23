@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Check for new releases of sortmeRNA
     env:
-      DOCKERFILE: "wsl_distro_build/build-context/Dockerfile"
+      DOCKERFILE: "./wsl_distro_build/build-context/Dockerfile"
       REPO: "biocore/sortmerna"
     steps:
     - name: Get sortmeRNA version from Dockerfile
