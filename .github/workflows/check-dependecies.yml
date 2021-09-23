@@ -1,5 +1,12 @@
 name: Check dependencies
 
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "21 19 * * *"
+    
 jobs:
   check-sortmeRNA:
     runs-on: ubuntu-latest
@@ -23,7 +30,7 @@ jobs:
       if: env.UPDATE_AVAILABLE == 'true'
       name: Create issue when new version is available
       with:
-        title: Update sortmeRNA to release version $CURRENT_VERSION
+        title: Update sortmeRNA to release version ${{env.CURRENT_VERSION}}
         token: ${{secrets.GITHUB_TOKEN}}
         labels: dependency-update
-        body: A new release of $REPO was found. Dockerfile uses version v$USED_VERSION but latest available version is $LATEST_VERSION.
+        body: A new release of ${{env.REPO}} was found. Dockerfile uses version v${{env.USED_VERSION}} but latest available version is ${{env.LATEST_VERSION}}.
