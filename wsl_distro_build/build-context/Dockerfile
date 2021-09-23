@@ -82,7 +82,7 @@ RUN  curl -L http://www.microbesonline.org/fasttree/FastTree -o FastTree_${fastt
 ##############################################
 WORKDIR /usr/local/bin
 
-ARG sortmerna_version="4.3.4"
+ARG sortmerna_version="4.3.3"
 RUN  curl -L https://github.com/biocore/sortmerna/releases/download/v${sortmerna_version}/sortmerna-${sortmerna_version}-Linux.tar.gz -o sortmerna.tar.gz \
   && if [ $(md5sum ./sortmerna.tar.gz) != "85b659dc000718e0b3c0de842dd1bb6c ./sortmerna_source_code.tar.gz" ]; then echo "sortmerna hash mismatch"; exit 1; fi \
   && tar -zxvf ./sortmerna.tar.gz \
