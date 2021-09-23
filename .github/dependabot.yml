@@ -6,6 +6,6 @@
 version: 2
 updates:
   - package-ecosystem: "docker"
-    directory: "wsl_distro_build/build-context/Dockerfile" # Location of package manifests
+    directory: "wsl_distro_build/build-context"
     schedule:
       interval: "daily"
