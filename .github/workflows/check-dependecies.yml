@@ -15,6 +15,8 @@ jobs:
       DOCKERFILE: "./wsl_distro_build/build-context/Dockerfile"
       REPO: "biocore/sortmerna"
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
     - name: Get sortmeRNA version from Dockerfile
       run: echo "USED_VERSION=$(grep "sortmerna_version=" $DOCKERFILE | cut -f2 -d'"')" >> $GITHUB_ENV
     - name: Get current version from github
