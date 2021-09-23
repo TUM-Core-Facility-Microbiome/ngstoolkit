@@ -1,12 +1,5 @@
 name: Check dependencies
 
-on:
-  push:
-    branches:
-      - main
-  schedule:
-    - cron: "21 19 * * *"
-    
 jobs:
   check-sortmeRNA:
     runs-on: ubuntu-latest
