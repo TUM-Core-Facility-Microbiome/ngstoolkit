@@ -2,19 +2,18 @@ name: Check dependencies
 
 on:
   schedule:
-    - cron: "0 12 * * *"  # every day at noon
+    - cron: "14 17 * * *"
     
 jobs:
   check-sortmeRNA:
+    runs-on: ubuntu-latest
     name: Check for new releases of sortmeRNA
     env:
       DOCKERFILE: "wsl_distro_build/build-context/Dockerfile"
       REPO: "biocore/sortmerna"
     steps:
     - name: Get sortmeRNA version from Dockerfile
-      run: 
-        - echo "USED_VERSION=$(grep "sortmerna_version=" ${DOCKERFILE} | cut -f2 -d'"')" >> $GITHUB_ENV
-        - echo ${USED_VERSION}
+      run: echo "USED_VERSION=$(grep "sortmerna_version=" ${DOCKERFILE} | cut -f2 -d'"')" >> $GITHUB_ENV
     - name: Get current version from github
       run: echo "LATEST_VERSION=$(curl --silent "https://api.github.com/repos/${REPO}/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')" >> $GITHUB_ENV
     - uses: nashmaniac/create-issue-action@v1.1
