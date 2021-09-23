@@ -2,7 +2,7 @@ name: Check dependencies
 
 on:
   schedule:
-    - cron: "14 17 * * *"
+    - cron: "19 17 * * *"
     
 jobs:
   check-sortmeRNA:
