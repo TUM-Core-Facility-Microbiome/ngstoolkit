@@ -548,7 +548,7 @@ if ($doZ == 0) {
             $udb = $db;
         }
 
-        $command = $usearch . " -uchime2_ref $pathout/$otus_03_filename -db $udb -nonchimeras $pathout/$nonchimeric_otus_03_filename -strand plus";
+        $command = $usearch . " -uchime2_ref $pathout/$otus_03_filename -db $udb -notmatched $pathout/$nonchimeric_otus_03_filename -strand plus -mode specific";
         @output = `$command`;
         if ($?) {
             print "Chimeras removal command failed\n";
