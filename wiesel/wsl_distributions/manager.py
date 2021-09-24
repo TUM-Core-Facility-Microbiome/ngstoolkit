@@ -192,7 +192,7 @@ class DistributionTarFile(DistributionDefinition):
         try:
             registered_distro = self._build()
             return registered_distro
-        except errors.WslImportFailedDuplicate as e:
+        except errors.WslImportFailed as e:
             if not force:
                 raise e
             else:
