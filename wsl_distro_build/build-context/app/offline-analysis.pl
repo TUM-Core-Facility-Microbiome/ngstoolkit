@@ -337,7 +337,7 @@ if ($isPaired == 1) {
     }
 }
 
-#proccesing for single side sequences 
+#proccesing for single side sequences
 else {
     # make header for stats
     push @header_array, ("EE-filtering", "Chimeras-Artifacts", "OTU Abundance filter");
@@ -745,7 +745,7 @@ logToStatusFile("Clean up...");
 #copy the analysis readme file to the job output
 # system("cp $AnalysisReadMe $pathout/ReadMe.pdf") == 0 or terminate(3);
 
-#build the new stat file 
+#build the new stat file
 buildStat();
 
 #remove intermediate files
