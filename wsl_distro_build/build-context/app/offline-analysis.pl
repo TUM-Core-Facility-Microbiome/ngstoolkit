@@ -760,7 +760,7 @@ if ($cleanOutputDir == 1) {
     system("rm $pathout/$nonchimeric_otus_03_filename") == 0 or terminate(4);
     system("rm $pathout/$otu_table_03_filtered") == 0 or terminate(4);
     system("rm $pathout/$merged_filename") == 0 or terminate(4);
-    system("rm $pathout/$filterGoodFolderName.fasta") == 0 or terminate(4);
+    system("rm $pathout/$good_seqs") == 0 or terminate(4);
     system("rm $pathout/$filterGoodFolderName.log") == 0 or terminate(4);
     system("rm $pathout/2bpaired.tab") == 0 or terminate(4);
     if ($reference_sequence eq "16S") {
