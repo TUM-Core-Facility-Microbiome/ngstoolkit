@@ -199,6 +199,7 @@ if ($isPaired == 1) {
 
         if (${$samplesStats_hash{$sample}}[0] == 0) {
             push(@{$samplesStats_hash{$sample}}, 0);
+            print "DEBUG: PUSH 0 ($samplesStats_hash{$sample})";
             print "Sample has no reads assigned to it!!\n";
         }
         else {
@@ -215,6 +216,7 @@ if ($isPaired == 1) {
                     print "\tMerging pairs $forward_file and $reverse_file from sample $sample... Done\n";
                     print "\t$merged_number were merged out of $pairsnum pairs.\n\n";
                     push(@{$samplesStats_hash{$sample}}, $merged_number);
+                    print "DEBUG: PUSH merged_number $merged_number ($samplesStats_hash{$sample})";
                     system "cat $pathout/report.txt >> $logfile";
                     unlink("$pathout/report.txt");
                 }
@@ -230,6 +232,7 @@ if ($isPaired == 1) {
                 print "\tMerging pairs $forward_file and $reverse_file from sample $sample... Done\n";
                 print "\t$merged_number were merged out of $pairsnum pairs.\n\n";
                 push(@{$samplesStats_hash{$sample}}, $merged_number);
+                print "DEBUG: PUSH merged_number $merged_number ($samplesStats_hash{$sample})";
                 system "cat $pathout/report.txt >> $logfile";
                 unlink("$pathout/report.txt");
             }
@@ -238,6 +241,7 @@ if ($isPaired == 1) {
         # Start Trimming task
         if (${$samplesStats_hash{$sample}}[1] == 0) {
             push(@{$samplesStats_hash{$sample}}, 0);
+            print "DEBUG: PUSH 0 ($samplesStats_hash{$sample})";
             print "Sample has no merged reads assigned to it!!\n";
         }
         else {
@@ -271,12 +275,14 @@ if ($isPaired == 1) {
                 print "\t$filtered_number seqs remain from $merged_number merged sequences.\n\n";
 
                 push(@{$samplesStats_hash{$sample}}, $filtered_number);
+                print "DEBUG: PUSH filtered_number $filtered_number ($samplesStats_hash{$sample})";
             }
         }
 
         # Start Dereplicating part
         if (${$samplesStats_hash{$sample}}[2] == 0) {
             push(@{$samplesStats_hash{$sample}}, (0, 0));
+            print "DEBUG: PUSH 0, 0 ($samplesStats_hash{$sample})";
             print "Sample has no quality reads assigned to it!!\n";
         }
         else {
@@ -302,6 +308,7 @@ if ($isPaired == 1) {
         # Start denoising part
         if (${$samplesStats_hash{$sample}}[2] == 0) {
             push(@{$samplesStats_hash{$sample}}, (0, 0));
+            print "DEBUG: PUSH 0, 0 ($samplesStats_hash{$sample})";
             print "Sample has no quality reads assigned to it!!\n";
         }
         else {
@@ -351,6 +358,7 @@ else {
 
         if (${$samplesStats_hash{$sample}}[0] == 0) {
             push(@{$samplesStats_hash{$sample}}, 0);
+            print "DEBUG: PUSH 0 ($samplesStats_hash{$sample})";
             print "Sample has no reads assigned to it!!\n";
         }
         else {
@@ -383,12 +391,13 @@ else {
                 print "Done\n";
                 print "\t$filtered_number seqs remain from $reads_number reads sequences.\n\n";
                 push(@{$samplesStats_hash{$sample}}, $filtered_number);
+                print "DEBUG: PUSH filtered_number $filtered_number ($samplesStats_hash{$sample})";
             }
         }
 
         if (${$samplesStats_hash{$sample}}[1] == 0) {
             push(@{$samplesStats_hash{$sample}}, (0, 0));
-
+            print "DEBUG: PUSH 0, 0 ($samplesStats_hash{$sample})";
         }
         else {
 
@@ -412,6 +421,7 @@ else {
 
         if (${$samplesStats_hash{$sample}}[2] == 0) {
             push(@{$samplesStats_hash{$sample}}, (0, 0));
+            print "DEBUG: PUSH 0, 0 ($samplesStats_hash{$sample})";
             print "Sample has no quality reads assigned to it!!\n";
         }
         else {
