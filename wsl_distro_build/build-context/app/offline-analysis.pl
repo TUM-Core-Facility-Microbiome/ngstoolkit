@@ -134,10 +134,10 @@ else {
     print "\nGenerate stats file\n";
     logToStatusFile("Running readcount...");
     if ($mapfilename ne "0") { # not undefined
-        system "python3 $bin_dir/readcount.py \"$demultiplexed\" \"$stats_filename\" \"$filelist\" --mapping \"$mapfilename\" --log-failed \"$pathout/readcount_failed.tab\""
+        system "python3 $bin_dir/readcount.py \"$demultiplexed\" \"$stats_filename\" \"$filelist\" --ispaired \"$isPaired\" --mapping \"$mapfilename\" --log-failed \"$pathout/readcount_failed.tab\""
     }
     else {
-        system "python3 $bin_dir/readcount.py \"$demultiplexed\" \"$stats_filename\" \"$filelist\" --log-failed \"$pathout/readcount_failed.tab\""
+        system "python3 $bin_dir/readcount.py \"$demultiplexed\" \"$stats_filename\" \"$filelist\" --ispaired \"$isPaired\" --log-failed \"$pathout/readcount_failed.tab\""
     }
 }
 
