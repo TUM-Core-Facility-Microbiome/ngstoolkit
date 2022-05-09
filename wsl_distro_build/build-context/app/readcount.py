@@ -18,10 +18,16 @@ parser.add_argument('statsout', type=str)
 parser.add_argument('tobepairedout', type=str)
 parser.add_argument('--mapping', type=str)
 parser.add_argument('--log-failed', type=str)
+parser.add_argument('--ispaired', type=int)
 args = parser.parse_args()
 
 stats_out_path = args.statsout
 tobepaired_out_path = args.tobepairedout
+
+if args.ispaired == 1:
+    is_paired = True
+else:
+    is_paired = False
 
 log_failed = args.log_failed
 if log_failed:
@@ -131,7 +137,10 @@ logging.debug(f'entries of mapping file: {mapping!r}')
 # Generate headers of tab files
 # stats_string_tab = "Sample_ID\tDemultiplexing\n"
 stats_string_tab = ""
-tobepaired_string_tab = "#Forward\tReverse\tID\tfasta\n"
+if is_paired:
+    tobepaired_string_tab = "#Forward\tReverse\tID\tfasta\n"
+else:
+    tobepaired_string_tab = "#Forward\tfasta\n"
 
 ignore = []  # array of already matched files as we iterate filename by filename
 i = 0  # an iterator for processed files
@@ -174,28 +183,29 @@ for file in os.listdir(pathToFolder):
             failedFilenames.append(forwardFile)
             forwardFile = "None"
 
-        # count lines in reverse file
-        try:
-            rwCount = file_len(pathToFolder + "/" + reverseFile)
-        except FileNotFoundError:
-            rwCount = 0
-            failedInThisIteration = True
-            failed += 1
-            failedFilenames.append(reverseFile)
-            reverseFile = "None"
+        if is_paired:
+            # count lines in reverse file
+            try:
+                rwCount = file_len(pathToFolder + "/" + reverseFile)
+            except FileNotFoundError:
+                rwCount = 0
+                failedInThisIteration = True
+                failed += 1
+                failedFilenames.append(reverseFile)
+                reverseFile = "None"
 
-        # generate count for demultiplexing
-        # we assume that the counts are the same for rw file and fw file
-        if fwCount != rwCount:
-            print("ERROR: Counts not the same in forward and reverse for files {} and {}".format(forwardFile,
-                                                                                                 reverseFile))
-            if not log_fails_and_continue:
-                exit(1)
-            else:
-                log_to_status_file('WARNING: Readcount failed for a file. Process continues...')
-                with open(log_failed_path, 'a') as f:
-                    f.write(
-                        f"{forwardFile}\tERROR: Counts not the same in forward and reverse for files {forwardFile} and {reverseFile}\n")
+            # generate count for demultiplexing
+            # we assume that the counts are the same for rw file and fw file
+            if fwCount != rwCount:
+                print("ERROR: Counts not the same in forward and reverse for files {} and {}".format(forwardFile,
+                                                                                                    reverseFile))
+                if not log_fails_and_continue:
+                    exit(1)
+                else:
+                    log_to_status_file('WARNING: Readcount failed for a file. Process continues...')
+                    with open(log_failed_path, 'a') as f:
+                        f.write(
+                            f"{forwardFile}\tERROR: Counts not the same in forward and reverse for files {forwardFile} and {reverseFile}\n")
 
         # test if the count can be divided by 4 as assumed
         if fwCount % 4 != 0:
@@ -221,22 +231,23 @@ for file in os.listdir(pathToFolder):
 
             tobepaired_string_tab += str(forwardFile)
             tobepaired_string_tab += "\t"
-            tobepaired_string_tab += str(reverseFile)
-            tobepaired_string_tab += "\t"
-            tobepaired_string_tab += str(ID)
-            tobepaired_string_tab += "\t"
+            if is_paired:
+                tobepaired_string_tab += str(reverseFile)
+                tobepaired_string_tab += "\t"
+                tobepaired_string_tab += str(ID)
+                tobepaired_string_tab += "\t"
             tobepaired_string_tab += str(ID + ".fasta")
             tobepaired_string_tab += "\n"
 
             i += 1
 
 # print some output about failed attempts
-processedFiles = i * 2
-print("\nSuccessfully processed {} files.\n{} failed: {}".format(processedFiles, failed, str(failedFilenames)))
+processedSamples = i
+print("\nSuccessfully processed {} samples.\n{} failed: {}".format(processedSamples, failed, str(failedFilenames)))
 
 sleep(3)
 
-if processedFiles > 0:
+if processedSamples > 0:
     with open(stats_out_path, "w") as file:
         file.write(stats_string_tab)
 
@@ -246,7 +257,7 @@ else:
     # there were no fastq files in that folder
     print("\nNo files to generate, because no files were processed.")
 
-    if processedFiles == 0 and failed == 0:
+    if processedSamples == 0 and failed == 0:
         print("You maybe want to unzip files first.")
     else:
         print("Make sure there are .fastq files in the folder.")
